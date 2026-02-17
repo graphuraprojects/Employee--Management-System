@@ -80,7 +80,7 @@ const ChatPage = () => {
     // --- NAVIGATION HANDLER ---
     const handleGoBack = () => {
         if (user.role === 'Admin') navigate('/admin/dashboard');
-        else if (user.role === 'Department Head') navigate('/department-head/dashboard');
+        else if (user.role === 'Department Head') navigate('/head/dashboard');
         else navigate('/employee/dashboard');
     };
 
