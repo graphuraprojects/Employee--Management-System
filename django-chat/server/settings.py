@@ -85,6 +85,7 @@ CORS_ALLOW_CREDENTIALS = True
 # Trusted origins for CSRF (WebSockets)
 CSRF_TRUSTED_ORIGINS = [
     "https://employee-management-system-mauve-sigma.vercel.app",
+    "https://employee-management-system-chat-feature.onrender.com" # Added your new backend URL
 ]
 
 
