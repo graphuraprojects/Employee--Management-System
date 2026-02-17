@@ -1,7 +1,16 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://employee-management-system-uisg.onrender.com/api/$1"},
-
-    { "source": "/(.*)", "destination": "/index.html"}
-]
+    {
+      "source": "/api/v1/:match*",
+      "destination": "https://employee-management-system-uisg.onrender.com/api/v1/:match*"
+    },
+    {
+      "source": "/api/chat/:match*",
+      "destination": "https://employee-management-system-chat-feature.onrender.com/api/chat/:match*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
