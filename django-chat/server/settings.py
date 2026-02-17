@@ -74,7 +74,20 @@ CHANNEL_LAYERS = {
     }
 }
 
-CORS_ALLOW_ALL_ORIGINS = True 
+CORS_ALLOWED_ORIGINS = [
+    "https://employee-management-system-mauve-sigma.vercel.app", # Your Production Frontend
+    "http://localhost:5173", # Local development
+]
+
+# Allow credentials (cookies/headers)
+CORS_ALLOW_CREDENTIALS = True
+
+# Trusted origins for CSRF (WebSockets)
+CSRF_TRUSTED_ORIGINS = [
+    "https://employee-management-system-mauve-sigma.vercel.app",
+]
+
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
