@@ -105,6 +105,15 @@ export const employeeService = {
         }
     },
 
+    assignDepartment: async (employeeId, departmentId) => {
+        try {
+            const response = await api.patch(`/admin/employee/${employeeId}/assign-department`, { departmentId });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
     updateProfile: async (formDatatoSend) => {
         try {
             const response = await api.put(`/admin/me`, formDatatoSend, {
@@ -253,6 +262,15 @@ export const employeeService = {
     updateTaskByAdmin: async (taskId, updateData) => {
         try {
             const response = await api.patch(`/admin/tasks/${taskId}`, updateData);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    deleteTask: async (taskId) => {
+        try {
+            const response = await api.delete(`/admin/tasks/${taskId}`);
             return response.data;
         } catch (error) {
             throw error;

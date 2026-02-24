@@ -11,6 +11,7 @@ import { TbShieldSearch } from "react-icons/tb";
 import { useAuth } from "../../context/AuthContext";
 import authService from "../../services/auth";
 import AdminSidePic from "../../assets/images/Admin.jpg";
+import BackButton from "../../Components/BackButton.jsx";
 
 export default function AdminLogin() {
   const [view, setView] = useState("login");
@@ -115,13 +116,18 @@ export default function AdminLogin() {
       const response = await authService.requestForgotpassword(null, email, userType);
       
       if (response.success) {
-        showToast("If you are a registered user, you will receive an email with OTP.", "success");
+        showToast("OTP sent successfully! Please check your email.", "success");
         setView("verifyOTP");
       } else {
         showToast(response.message || "Failed to send OTP", "error");
       }
     } catch (error) {
-      showToast("Network error. Please try again.", "error");
+      // Check if it's an HTTP error response
+      if (error.response && error.response.data) {
+        showToast(error.response.data.message || "Failed to send OTP", "error");
+      } else {
+        showToast("Network error. Please try again.", "error");
+      }
       console.log("admin forgot password error", error);
     } finally {
       setIsLoading(false);
@@ -266,7 +272,10 @@ export default function AdminLogin() {
           </div>
 
           {/* RIGHT FORM SIDE */}
-          <div className="p-6 sm:p-8 md:p-10">
+          <div className="p-6 sm:p-8 md:p-10 relative">
+
+            <BackButton/>
+
             {view === "login" && (
               <>
                 <div className="flex justify-center mb-6">

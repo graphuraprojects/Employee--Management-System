@@ -272,6 +272,11 @@ export default function Tasks() {
       if (result && result.success) {
         showToast("Task deleted successfully!", "success");
 
+        // Update headTasks (used by Department Head view)
+        setHeadTasks((prev) =>
+          prev.filter((task) => (task._id || task.id) !== taskId)
+        );
+
         setSelectedEmployee((prev) =>
           prev
             ? {
@@ -438,7 +443,7 @@ export default function Tasks() {
       const result = await departmentService.deleteDepartment(selectedDepartment._id);
       
       if (result && result.success) {
-        showToast("Department deleted successfully!", "success");
+        showToast(result.message || "Department deleted successfully!", "success");
         setShowDeleteDepartmentModal(false);
         setSelectedDepartment(null);
         getDepartmentTasks();
@@ -479,7 +484,8 @@ export default function Tasks() {
   const getTotalStats = () => {
     let total = 0, completed = 0, pending = 0;
     
-    employees.forEach(emp => {
+    // Filter to show only employees (role === "employee")
+    employees.filter(emp => emp.role === "employee").forEach(emp => {
       const stats = getTaskStats(emp);
       total += stats.total;
       completed += stats.completed;
@@ -490,18 +496,44 @@ export default function Tasks() {
       total, 
       completed, 
       pending,
-      totalEmployees: employees.length 
+      // Include both employees and Department Heads in total count
+      totalEmployees: employees.filter(emp => emp.role === "employee" || emp.role === "Department Head").length 
     };
   };
 
+  const getHeadTaskStats = () => {
+    let total = 0, completed = 0, pending = 0;
+    
+    headTasks.forEach(task => {
+      total += 1;
+      if (task.status === "completed") {
+        completed += 1;
+      } else if (task.status === "pending") {
+        pending += 1;
+      }
+    });
+    
+    return { total, completed, pending };
+  };
+
   const getDepartmentStats = (deptId) => {
-    const deptEmployees = employees.filter(emp => emp.department === deptId);
+    const deptEmployees = employees.filter(emp => {
+      // Handle both populated department (object) and non-populated (string/ObjectId)
+      if (emp.department && typeof emp.department === 'object') {
+        return emp.department._id === deptId || emp.department._id?.toString() === deptId?.toString();
+      }
+      return emp.department === deptId || emp.department?.toString() === deptId?.toString();
+    });
+    // Include both employees and Department Heads for department stats
+    const deptEmployeesWithHeads = deptEmployees.filter(emp => 
+      emp.role === "employee" || emp.role === "Department Head"
+    );
     const deptTasks = allTasks.filter(task => 
-      deptEmployees.some(emp => emp._id === task.employee)
+      deptEmployeesWithHeads.some(emp => emp._id === task.employee)
     );
     
     return {
-      totalEmployees: deptEmployees.length,
+      totalEmployees: deptEmployeesWithHeads.length,
       totalTasks: deptTasks.length,
       completed: deptTasks.filter(t => t.status === "completed").length,
       pending: deptTasks.filter(t => t.status === "pending").length
@@ -962,6 +994,9 @@ export default function Tasks() {
                 </p>
                 <p className="text-center text-lg font-bold text-gray-900 mb-4">
                   {selectedDepartment.name} ({selectedDepartment.code})?
+                </p>
+                <p className="text-center text-sm text-amber-600 mb-2">
+                  Warning: All employees assigned to this department will be unassigned.
                 </p>
                 <p className="text-center text-sm text-red-600 mb-6">
                   This action cannot be undone. All associated data will be removed.
@@ -1579,17 +1614,51 @@ export default function Tasks() {
                   </div>
                       </>
                     ) : (
-                      <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 p-4 sm:p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <div>
-                            <h2 className="text-base sm:text-lg font-bold text-gray-900">My Tasks</h2>
-                            <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                              Tasks assigned by Admin to you.
+                      <>
+                        {/* Stats Cards for Head's Tasks */}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-6">
+                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-purple-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mx-auto mb-2">
+                              <ListTodo className="w-5 h-5 text-purple-600" />
+                            </div>
+                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
+                              {getHeadTaskStats().total}
                             </p>
+                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">Total Tasks</p>
+                          </div>
+
+                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mx-auto mb-2">
+                              <CheckCircle className="w-5 h-5 text-green-600" />
+                            </div>
+                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-1">
+                              {getHeadTaskStats().completed}
+                            </p>
+                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">Completed</p>
+                          </div>
+
+                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-orange-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                            <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center mx-auto mb-2">
+                              <Clock className="w-5 h-5 text-orange-600" />
+                            </div>
+                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600 mb-1">
+                              {getHeadTaskStats().pending}
+                            </p>
+                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">Pending</p>
                           </div>
                         </div>
 
-                        {headTaskItems.length === 0 ? (
+                        <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 p-4 sm:p-6">
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <h2 className="text-base sm:text-lg font-bold text-gray-900">My Tasks</h2>
+                              <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                                Tasks assigned by Admin to you.
+                              </p>
+                            </div>
+                          </div>
+
+                          {headTaskItems.length === 0 ? (
                           <div className="text-center py-10 text-gray-500 text-sm">
                             No tasks assigned yet.
                           </div>
@@ -1627,7 +1696,8 @@ export default function Tasks() {
                             ))}
                           </div>
                         )}
-                      </div>
+                        </div>
+                      </>
                     )}
                   </div>
                 </div>

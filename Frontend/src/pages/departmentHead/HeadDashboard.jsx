@@ -105,16 +105,13 @@ const HeadDashboard = () => {
 
         // Fetch all data in parallel
         const [employeeRes, leaveRes, taskRes] = await Promise.all([
-          employeeService.getAllEmployees(),
+          employeeService.getDepartmentHeadEmployees(),
           employeeService.getLeavesdetails(),
           employeeService.getDepartmentTasks() // Fetch department employee tasks
         ]);
 
         // Filter employees in the same department as the head
-        const headDept = user?.department || user?.departmentId;
-        const deptEmpList = (employeeRes?.data || []).filter(emp => 
-          emp.department === headDept || emp.department?._id === headDept || emp.departmentId === headDept
-        );
+        const deptEmpList = employeeRes?.employees || [];
         setDepartmentEmployees(deptEmpList);
 
         // Filter leaves from department employees
@@ -171,12 +168,6 @@ const HeadDashboard = () => {
 
     // Fetch data immediately
     fetchDepartmentData();
-
-    // Set up real-time polling - refresh every 15 seconds
-    const intervalId = setInterval(fetchDepartmentData, 15000);
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(intervalId);
   }, [user?.department, user?.departmentId]);
 
   // Manual refresh handler
@@ -187,16 +178,13 @@ const HeadDashboard = () => {
     try {
       // Fetch all data in parallel
       const [employeeRes, leaveRes, taskRes] = await Promise.all([
-        employeeService.getAllEmployees(),
+        employeeService.getDepartmentHeadEmployees(),
         employeeService.getLeavesdetails(),
         employeeService.getDepartmentTasks() // Fetch department employee tasks
       ]);
 
-      // Filter employees in the same department as the head
-      const headDept = user?.department || user?.departmentId;
-      const deptEmpList = (employeeRes?.data || []).filter(emp => 
-        emp.department === headDept || emp.department?._id === headDept || emp.departmentId === headDept
-      );
+      // Get department employees from the response
+      const deptEmpList = employeeRes?.employees || [];
       setDepartmentEmployees(deptEmpList);
 
       // Filter leaves from department employees
@@ -453,10 +441,10 @@ const HeadDashboard = () => {
             {/* Task Bar Chart */}
             {taskStats.totalTasks > 0 ? (
               <div>
-                <ResponsiveContainer width="100%" height={260}>
+                <ResponsiveContainer width="100%" height={300}>
                   <BarChart
                     data={taskStats.chartData}
-                    margin={{ top: 20, right: 30, left: 0, bottom: 60 }}
+                    margin={{ top: 20, right: 30, left: 0, bottom: 80 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                     <XAxis 
@@ -464,7 +452,7 @@ const HeadDashboard = () => {
                       tick={{ fill: "#64748b", fontSize: 12 }}
                       angle={-45}
                       textAnchor="end"
-                      height={80}
+                      height={100}
                     />
                     <YAxis 
                       tick={{ fill: "#64748b", fontSize: 12 }}

@@ -21,6 +21,7 @@ const Settings = () => {
     const [showSuperAdminDropdown, setShowSuperAdminDropdown] = useState(false);
     const [superAdminKey, setSuperAdminKey] = useState("");
     const [isSuperAdminVerified, setIsSuperAdminVerified] = useState(false);
+    const [keyError, setKeyError] = useState("");
 
     // 🔥 Verify Super Admin Key
     const handleSuperAdminSubmit = async () => {
@@ -41,6 +42,7 @@ const Settings = () => {
             }
         } catch (err) {
             console.log(err.response?.data?.message || err.message);
+            setKeyError("Incorrect Key. Please try again.");
         }
     };
 
@@ -121,12 +123,17 @@ const Settings = () => {
                                     <input
                                         type="password"
                                         value={superAdminKey}
-                                        onChange={(e) =>
-                                            setSuperAdminKey(e.target.value)
-                                        }
+                                        onChange={(e) => {
+                                            setSuperAdminKey(e.target.value);
+                                            setKeyError("");
+                                        }}
                                         placeholder="Enter secret key"
                                         className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-400"
                                     />
+
+                                    {keyError && (
+                                        <p className="text-red-500 text-sm mt-1">{keyError}</p>
+                                    )}
 
                                     <button
                                         onClick={handleSuperAdminSubmit}
