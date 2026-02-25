@@ -33,8 +33,16 @@ export default function AddEmployee() {
 
   const fetchDepartmentsName = async () => {
     const result = await employeeService.getDepartmentTasks();
-    console.log(result);
-    setDepartmentNames(result?.data?.departmentDetails || []);
+
+    const departments = result?.data?.departmentDetails;
+
+    setDepartmentNames(
+      Array.isArray(departments)
+        ? departments
+        : departments
+          ? [departments]
+          : [],
+    );
   };
 
   const [formData, setFormData] = useState({

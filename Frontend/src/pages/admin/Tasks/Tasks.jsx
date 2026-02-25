@@ -23,6 +23,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function Tasks() {
+  
   const location = useLocation();
   const [departmentDetails, setDepartmentDetails] = useState(null);
   const [departments, setDepartments] = useState([]);
@@ -1383,6 +1384,8 @@ export default function Tasks() {
 
   const totalStats = getTotalStats();
 
+  console.log(role);
+
   // Department Head View (unchanged)
   return (
     <>
@@ -2221,7 +2224,7 @@ export default function Tasks() {
                               <Edit size={14} />
                             </button>
                           )}
-                          {(role === "Admin" || role === "Department Head") && (
+                          {["Admin", "Department Head"].includes(user?.role) && (
                             <button
                               onClick={() =>
                                 handleDeleteTask(task.id || task._id)
