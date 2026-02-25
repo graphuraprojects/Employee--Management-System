@@ -63,12 +63,16 @@ const AdminDashboard = () => {
     if (!user?._id && !user?.id) return;
     try {
       const id = user._id || user.id;
-      const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-      const CHAT_BASE_URL = isLocal ? "http://127.0.0.1:8000" : "https://employee-management-system-chat-feature.onrender.com";
+      const isLocal =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1";
+      const CHAT_BASE_URL = isLocal
+        ? "http://127.0.0.1:8000"
+        : "https://employee-management-system-chat-feature.onrender.com";
       const token = localStorage.getItem("token");
       const res = await axios.get(
         `${CHAT_BASE_URL}/api/chat/unread/total/${id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       setUnreadCount(res.data.count);
     } catch (e) {
@@ -82,8 +86,12 @@ const AdminDashboard = () => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-    const WS_BASE_URL = isLocal ? "ws://127.0.0.1:8000" : "wss://employee-management-system-chat-feature.onrender.com";
+    const isLocal =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1";
+    const WS_BASE_URL = isLocal
+      ? "ws://127.0.0.1:8000"
+      : "wss://employee-management-system-chat-feature.onrender.com";
     const ws = new WebSocket(`${WS_BASE_URL}/ws/chat/?token=${token}`);
     socketRef.current = ws;
 
@@ -319,28 +327,28 @@ const AdminDashboard = () => {
       <AdminSidebar />
       <div className="dashboard-wrapper bg-white min-h-screen relative">
         <div className="header-wrapper w-full bg-transparent px-4 sm:px-6 lg:px-10 py-8 border-b border-gray-200">
-          <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 rounded-2xl shadow-lg border border-white/20 px-5 sm:px-6 py-5">
-            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+          <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 rounded-2xl shadow-lg border border-white/20 px-4 sm:px-5 md:px-6 py-4 sm:py-5">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-5">
               {/* WELCOME SECTION */}
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center shadow-md border border-white/30">
-                  <FaUsers className="text-white text-xl" />
+              <div className="flex items-center gap-3 sm:gap-4 w-full md:w-auto">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl sm:rounded-2xl bg-white/20 flex items-center justify-center shadow-md border border-white/30 flex-shrink-0">
+                  <FaUsers className="text-white text-sm sm:text-base md:text-xl" />
                 </div>
-                <div>
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white truncate">
                     Welcome back, {capitalize(stats?.Admin?.firstName)} 👋
                   </h1>
-                  <p className="text-blue-100 text-sm mt-1">
+                  <p className="text-blue-100 text-xs sm:text-sm mt-0.5 sm:mt-1 truncate">
                     Here's what's happening with your company
                   </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white border border-white/30">
+                  <div className="mt-2 sm:mt-3 flex flex-wrap gap-1.5 sm:gap-2">
+                    <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold bg-white/20 text-white border border-white/30">
                       Total: {stats?.totalEmployees ?? 0}
                     </span>
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white border border-white/30">
+                    <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold bg-white/20 text-white border border-white/30">
                       Present: {stats?.totalEmployees ?? 0}
                     </span>
-                    <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white border border-white/30">
+                    <span className="px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold bg-white/20 text-white border border-white/30">
                       Pending: {stats?.pendingLeaves ?? 0}
                     </span>
                   </div>
@@ -348,18 +356,18 @@ const AdminDashboard = () => {
               </div>
 
               {/* ACTION BUTTONS (Chat & Add) */}
-              <div className="flex items-center gap-3 flex-shrink-0">
+              <div className="flex items-center gap-3 md:gap-4 flex-shrink-0 w-full md:w-auto justify-around">
                 {/* --- REAL-TIME CHAT BADGE --- */}
                 <div className="relative">
                   <button
                     onClick={() => navigate("/chat")}
-                    className="flex items-center gap-2 bg-white/10 text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-white/20 transition-all shadow-lg border border-white/20 backdrop-blur-sm"
+                    className="flex items-center gap-1 sm:gap-2 bg-white/10 text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold hover:bg-white/20 transition-all shadow-lg border border-white/20 backdrop-blur-sm"
                   >
-                    <BsChatDots className="text-lg" />
-                    <span className="hidden sm:inline">Chat</span>
+                    <BsChatDots className="text-sm sm:text-base md:text-lg" />
+                    <span className="hidden xs:inline">Chat</span>
                   </button>
                   {unreadCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-blue-500 shadow-md animate-pulse">
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[8px] sm:text-[10px] font-bold w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center rounded-full border-2 border-blue-500 shadow-md animate-pulse">
                       {unreadCount > 99 ? "99+" : unreadCount}
                     </span>
                   )}
@@ -367,17 +375,22 @@ const AdminDashboard = () => {
 
                 <NotificationSystem />
 
+                {/* Desktop Add Button */}
                 <button
                   onClick={() => navigate("/admin/employees/add")}
-                  className="hidden sm:flex items-center gap-2 bg-white text-blue-700 px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl whitespace-nowrap"
+                  className="hidden sm:flex items-center gap-2 bg-white text-blue-700 px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl whitespace-nowrap"
                 >
-                  <FiPlus className="text-lg" /> New Employee
+                  <FiPlus className="text-sm sm:text-base" />
+                  <span className="hidden md:inline">New Employee</span>
+                  <span className="inline md:hidden">Add</span>
                 </button>
+
+                {/* Mobile Add Button */}
                 <button
                   onClick={() => navigate("/admin/employees/add")}
-                  className="sm:hidden flex items-center gap-2 bg-white text-blue-700 px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-blue-50 transition-all shadow-lg"
+                  className="sm:hidden flex items-center justify-center bg-white text-blue-700 w-8 h-8 rounded-lg text-sm font-bold hover:bg-blue-50 transition-all shadow-lg"
                 >
-                  <IoMdPersonAdd className="text-lg" />
+                  <IoMdPersonAdd className="text-base" />
                 </button>
               </div>
             </div>
@@ -430,27 +443,30 @@ const AdminDashboard = () => {
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mt-10">
             {/* RECENT ACTIVITY */}
             <div className="xl:col-span-2">
-              <div className="bg-white/95 backdrop-blur-sm rounded-3xl px-6 py-6 shadow-lg border border-blue-100 h-full min-h-[600px] flex flex-col hover:shadow-xl transition-all hover:border-blue-200">
-                <div className="flex items-center justify-between mb-6 flex-shrink-0">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center shadow-md">
-                      <FaUserPlus className="text-white text-lg" />
+              <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl lg:rounded-3xl px-4 sm:px-5 lg:px-6 py-4 sm:py-5 lg:py-6 shadow-lg border border-blue-100 min-h-[400px] sm:min-h-[500px] lg:min-h-[600px] flex flex-col hover:shadow-xl transition-all hover:border-blue-200">
+                {/* Header Section */}
+                <div className="flex items-center justify-between mb-4 sm:mb-5 lg:mb-6 flex-shrink-0">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center shadow-md flex-shrink-0">
+                      <FaUserPlus className="text-white text-sm sm:text-base lg:text-lg" />
                     </div>
-                    <h3 className="text-lg font-bold text-slate-900">
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900">
                       Recent Activity
                     </h3>
                   </div>
                 </div>
-                <div className="space-y-4 flex-1 overflow-y-auto pr-2">
+
+                {/* Activities List - Scrollable */}
+                <div className="space-y-3 sm:space-y-4 flex-1 overflow-y-auto pr-1 sm:pr-2">
                   {loadingActivities ? (
                     <div className="flex items-center justify-center h-full">
-                      <p className="text-slate-400 text-sm">
+                      <p className="text-slate-400 text-xs sm:text-sm">
                         Loading activities...
                       </p>
                     </div>
                   ) : activities.length === 0 ? (
                     <div className="flex items-center justify-center h-full">
-                      <p className="text-slate-400 text-sm">
+                      <p className="text-slate-400 text-xs sm:text-sm">
                         No recent activities
                       </p>
                     </div>
@@ -788,23 +804,28 @@ const StatsCard = ({
 );
 
 const ActivityItem = ({ icon, iconBg, title, desc, time }) => (
-  <div className="flex items-start justify-between gap-4 p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition-all group border border-blue-100 hover:border-blue-200">
-    <div className="flex items-start gap-4 flex-1">
-      <div
-        className={`w-11 h-11 rounded-lg flex items-center justify-center flex-shrink-0 text-lg ${iconBg} group-hover:shadow-md transition-all`}
-      >
-        {icon}
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+  <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4 bg-blue-50 rounded-lg sm:rounded-xl hover:bg-blue-100 transition-all group border border-blue-100 hover:border-blue-200">
+    {/* Icon - Fixed size, doesn't shrink */}
+    <div
+      className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-lg flex items-center justify-center flex-shrink-0 text-sm sm:text-base lg:text-lg ${iconBg} group-hover:shadow-md transition-all`}
+    >
+      {icon}
+    </div>
+
+    {/* Content - Takes remaining space, handles text wrapping */}
+    <div className="flex-1 min-w-0">
+      <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-1 xs:gap-2">
+        <p className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-blue-600 transition-colors truncate">
           {title}
         </p>
-        <p className="text-xs text-slate-500 mt-0.5 truncate">{desc}</p>
+        <span className="text-[10px] sm:text-xs text-slate-400 whitespace-nowrap font-semibold">
+          {time}
+        </span>
       </div>
+      <p className="text-[11px] sm:text-xs text-slate-500 mt-1 break-words">
+        {desc}
+      </p>
     </div>
-    <span className="text-xs text-slate-400 whitespace-nowrap font-semibold flex-shrink-0">
-      {time}
-    </span>
   </div>
 );
 

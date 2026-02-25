@@ -333,6 +333,7 @@ function FeatureCard({ icon, title, desc, tag, delay }) {
       onMouseLeave={() => setHov(false)}
     >
       {/* Wash on hover */}
+
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
         style={{
@@ -348,32 +349,38 @@ function FeatureCard({ icon, title, desc, tag, delay }) {
       />
 
       {tag && (
-        <span
-          className="relative z-10 inline-block text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-4 border"
-          style={{
-            color: "#2563eb",
-            background: "#eff6ff",
-            borderColor: "#bfdbfe",
-          }}
-        >
-          {tag}
-        </span>
-      )}
+        <div className="relative z-10 flex items-center gap-10  mb-4 sm:mb-5">
+          <span
+            className="inline-block text-[8px] xs:text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2 sm:px-2.5 py-1 rounded-full border whitespace-nowrap"
+            style={{
+              color: "#2563eb",
+              background: "#eff6ff",
+              borderColor: "#bfdbfe",
+            }}
+          >
+            {tag}
+          </span>
 
-      <div
-        className="relative z-10 w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-all duration-400"
-        style={{
-          background: hov
-            ? "linear-gradient(135deg,#3b82f6,#1d4ed8)"
-            : "linear-gradient(135deg,#dbeafe,#bfdbfe)",
-          color: hov ? "white" : "#2563eb",
-          boxShadow: hov ? "0 8px 24px rgba(59,130,246,0.4)" : "none",
-          transform: hov ? "rotate(7deg) scale(1.1)" : "rotate(0) scale(1)",
-          transition: "all 0.35s cubic-bezier(0.34,1.56,0.64,1)",
-        }}
-      >
-        {icon}
-      </div>
+          <div
+            className="w-8 h-8 sm:w-14 sm:h-14 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center transition-all duration-400 flex-shrink-0"
+            style={{
+              background: hov
+                ? "linear-gradient(135deg,#3b82f6,#1d4ed8)"
+                : "linear-gradient(135deg,#dbeafe,#bfdbfe)",
+              color: hov ? "white" : "#2563eb",
+              boxShadow: hov ? "0 8px 24px rgba(59,130,246,0.4)" : "none",
+              transform: hov
+                ? "rotate(5deg) scale(1.05)"
+                : "rotate(0) scale(1)",
+              transition: "all 0.35s cubic-bezier(0.34,1.56,0.64,1)",
+            }}
+          >
+            <span className="text-sm sm:text-base md:text-lg lg:text-xl">
+              {icon}
+            </span>
+          </div>
+        </div>
+      )}
 
       <h3
         className="relative z-10 text-lg font-bold mb-2.5 transition-colors duration-300"
@@ -438,7 +445,7 @@ export default function HomePage() {
     {
       icon: <Lock size={24} />,
       title: "Secure Authentication",
-      desc: "Bank-grade MFA & SSO with zero-trust architecture and granular role-based access controls.",
+      desc: "We provide bank-grade multi-factor authentication (MFA) and single sign-on (SSO) secured by a zero-trust architecture and granular role-based access controls.",
       tag: "Security",
       delay: 0.05,
     },
@@ -484,7 +491,7 @@ export default function HomePage() {
       label: "Payroll",
       icon: <IndianRupee size={15} />,
       title: "Zero-Error Payroll Processing",
-      desc: "From salary computation to tax filing — fully automated. Handles complex deductions, multi-currency and 150+ country compliance without a single manual step.",
+      desc: "From salary computation to tax filing-fully automated. Handles complex deductions, multi-currency and 150+ country compliance without a single manual step.",
       points: [
         "Multi-currency & multi-country",
         "Tax auto-computation",
@@ -893,11 +900,11 @@ export default function HomePage() {
                 className="text-lg max-w-2xl mx-auto leading-relaxed"
                 style={{ color: "#64748b" }}
               >
-                Six enterprise-grade modules working in perfect harmony — from
+                Six enterprise-grade modules working in perfect harmony from
                 first clock-in to final payslip, all powered by AI.
               </p>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-8">
               {features.map((f, i) => (
                 <FeatureCard key={i} {...f} />
               ))}
@@ -1159,7 +1166,10 @@ export default function HomePage() {
                   Customer Stories
                 </span>
               </div>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-black" style={{ color: "#0f172a" }}>
+              <h2
+                className="text-4xl md:text-5xl lg:text-6xl font-black"
+                style={{ color: "#0f172a" }}
+              >
                 Trusted by{" "}
                 <span className="text-shimmer">industry leaders</span>
               </h2>

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import { 
-  Users, 
-  CheckCircle, 
-  Clock, 
-  ListTodo, 
-  Plus, 
+import {
+  Users,
+  CheckCircle,
+  Clock,
+  ListTodo,
+  Plus,
   X,
   ArrowLeft,
   Calendar,
@@ -14,7 +14,7 @@ import {
   UserCircle,
   Edit,
   Trash2,
-  Save
+  Save,
 } from "lucide-react";
 import { employeeService } from "../../../services/employeeServices";
 import { departmentService } from "../../../services/departmentService";
@@ -38,7 +38,11 @@ export default function Tasks() {
   const [headTab, setHeadTab] = useState("employees");
   const [selectedHeadTask, setSelectedHeadTask] = useState(null);
   const [isHeadTaskModalOpen, setIsHeadTaskModalOpen] = useState(false);
-  const [headTaskUpdate, setHeadTaskUpdate] = useState({ status: "in-progress", comment: "", file: null });
+  const [headTaskUpdate, setHeadTaskUpdate] = useState({
+    status: "in-progress",
+    comment: "",
+    file: null,
+  });
   const [showEditTaskModal, setShowEditTaskModal] = useState(false);
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editTaskData, setEditTaskData] = useState({
@@ -47,16 +51,17 @@ export default function Tasks() {
     priority: "medium",
     status: "pending",
     startDate: "",
-    dueDate: ""
+    dueDate: "",
   });
   const { user } = useAuth();
   const [role, setRole] = useState();
-   const naviagate = useNavigate();
+  const naviagate = useNavigate();
 
   // Department CRUD States
   const [showAddDepartmentModal, setShowAddDepartmentModal] = useState(false);
   const [showEditDepartmentModal, setShowEditDepartmentModal] = useState(false);
-  const [showDeleteDepartmentModal, setShowDeleteDepartmentModal] = useState(false);
+  const [showDeleteDepartmentModal, setShowDeleteDepartmentModal] =
+    useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -65,7 +70,7 @@ export default function Tasks() {
     name: "",
     code: "",
     description: "",
-    manager: ""
+    manager: "",
   });
 
   // New Task Form
@@ -78,7 +83,7 @@ export default function Tasks() {
     status: "pending",
     priority: "medium",
     startDate: "",
-    dueDate: ""
+    dueDate: "",
   });
 
   useEffect(() => {
@@ -117,13 +122,12 @@ export default function Tasks() {
   }, [role]);
 
   const shiftToDepartmentEmployeePage = (department) => {
-
     naviagate("/admin/departmentEmployee", {
-      state:{
-        department: department
-      }
-    })
-  }
+      state: {
+        department: department,
+      },
+    });
+  };
 
   useEffect(() => {
     const requestedTab = location.state?.headTab;
@@ -141,32 +145,34 @@ export default function Tasks() {
       const result = await employeeService.getDepartmentTasks();
       console.log(result);
       setRole(result.data.role);
-      
+
       if (result.data.role === "Department Head") {
         if (result && result.data) {
           setDepartmentDetails(result.data.departmentDetails);
           setHeadTasks(result.data.taskDetails || result.data.headTasks || []);
-          
-          const employeesWithTasks = result.data.departmentEmployees.map(emp => {
-            const employeeTasks = result.data.departmentTasks.filter(
-              task => task.employee === emp._id
-            );
-            
-            return {
-              ...emp,
-              tasks: employeeTasks.map(task => ({
-                id: task._id,
-                taskName: task.taskName,
-                description: task.description,
-                status: task.status,
-                priority: task.priority,
-                startDate: task.startDate,
-                dueDate: task.dueDate,
-                createdAt: task.createdAt
-              }))
-            };
-          });
-          
+
+          const employeesWithTasks = result.data.departmentEmployees.map(
+            (emp) => {
+              const employeeTasks = result.data.departmentTasks.filter(
+                (task) => task.employee === emp._id,
+              );
+
+              return {
+                ...emp,
+                tasks: employeeTasks.map((task) => ({
+                  id: task._id,
+                  taskName: task.taskName,
+                  description: task.description,
+                  status: task.status,
+                  priority: task.priority,
+                  startDate: task.startDate,
+                  dueDate: task.dueDate,
+                  createdAt: task.createdAt,
+                })),
+              };
+            },
+          );
+
           setEmployees(employeesWithTasks);
         }
 
@@ -182,10 +188,12 @@ export default function Tasks() {
           setDepartments(result.data.departmentDetails || []);
           setEmployees(result.data.departmentEmployees || []);
           setAllTasks(result.data.departmentTasks || []);
-          
+
           // Filter only Department Heads
-          const heads = result.data.departmentEmployees.filter(emp => 
-            emp.role === "Department Head" || emp.position === "Department Head"
+          const heads = result.data.departmentEmployees.filter(
+            (emp) =>
+              emp.role === "Department Head" ||
+              emp.position === "Department Head",
           );
           setDepartmentHeads(heads);
         }
@@ -210,13 +218,18 @@ export default function Tasks() {
     const hasAssignees = isTeamAssignment
       ? newTask.employeeIds.length > 0
       : Boolean(newTask.employeeId);
-    
-    if (!newTask.taskName || !newTask.description || !hasAssignees ||
-        !newTask.startDate || !newTask.dueDate) {
+
+    if (
+      !newTask.taskName ||
+      !newTask.description ||
+      !hasAssignees ||
+      !newTask.startDate ||
+      !newTask.dueDate
+    ) {
       showToast("Please fill all required fields", "error");
       return;
     }
-    
+
     try {
       const taskPayload = {
         taskName: newTask.taskName,
@@ -225,14 +238,14 @@ export default function Tasks() {
         priority: newTask.priority,
         startDate: newTask.startDate,
         dueDate: newTask.dueDate,
-        assignmentType: isTeamAssignment ? "team" : "single"
+        assignmentType: isTeamAssignment ? "team" : "single",
       };
 
       if (isTeamAssignment) {
         await Promise.all(
           newTask.employeeIds.map((employeeId) =>
-            employeeService.addTask(employeeId, taskPayload)
-          )
+            employeeService.addTask(employeeId, taskPayload),
+          ),
         );
       } else {
         await employeeService.addTask(newTask.employeeId, taskPayload);
@@ -249,7 +262,7 @@ export default function Tasks() {
         status: "pending",
         priority: "medium",
         startDate: "",
-        dueDate: ""
+        dueDate: "",
       });
       setSelectedEmployee(null);
       getDepartmentTasks();
@@ -262,7 +275,9 @@ export default function Tasks() {
   const handleDeleteTask = async (taskId) => {
     if (!taskId) return;
 
-    const confirmed = window.confirm("Are you sure you want to delete this task?");
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this task?",
+    );
     if (!confirmed) return;
 
     try {
@@ -274,7 +289,7 @@ export default function Tasks() {
 
         // Update headTasks (used by Department Head view)
         setHeadTasks((prev) =>
-          prev.filter((task) => (task._id || task.id) !== taskId)
+          prev.filter((task) => (task._id || task.id) !== taskId),
         );
 
         setSelectedEmployee((prev) =>
@@ -282,21 +297,23 @@ export default function Tasks() {
             ? {
                 ...prev,
                 tasks: (prev.tasks || []).filter(
-                  (task) => (task.id || task._id) !== taskId
-                )
+                  (task) => (task.id || task._id) !== taskId,
+                ),
               }
-            : prev
+            : prev,
         );
 
         setEmployees((prev) =>
           prev.map((emp) => ({
             ...emp,
-            tasks: emp.tasks ? emp.tasks.filter((task) => (task.id || task._id) !== taskId) : emp.tasks
-          }))
+            tasks: emp.tasks
+              ? emp.tasks.filter((task) => (task.id || task._id) !== taskId)
+              : emp.tasks,
+          })),
         );
 
         setAllTasks((prev) =>
-          prev.filter((task) => (task._id || task.id) !== taskId)
+          prev.filter((task) => (task._id || task.id) !== taskId),
         );
       }
     } catch (err) {
@@ -315,7 +332,7 @@ export default function Tasks() {
       priority: task.priority || "medium",
       status: task.status || "pending",
       startDate: task.startDate ? task.startDate.split("T")[0] : "",
-      dueDate: task.dueDate ? task.dueDate.split("T")[0] : ""
+      dueDate: task.dueDate ? task.dueDate.split("T")[0] : "",
     });
     setShowEditTaskModal(true);
   };
@@ -330,7 +347,10 @@ export default function Tasks() {
 
     try {
       setIsProcessing(true);
-      const result = await employeeService.updateTaskByAdmin(editingTaskId, editTaskData);
+      const result = await employeeService.updateTaskByAdmin(
+        editingTaskId,
+        editTaskData,
+      );
       if (result && result.success) {
         showToast("Task updated successfully!", "success");
         setSelectedEmployee((prev) =>
@@ -340,10 +360,10 @@ export default function Tasks() {
                 tasks: (prev.tasks || []).map((task) =>
                   (task.id || task._id) === editingTaskId
                     ? { ...task, ...editTaskData }
-                    : task
-                )
+                    : task,
+                ),
               }
-            : prev
+            : prev,
         );
 
         setEmployees((prev) =>
@@ -353,18 +373,18 @@ export default function Tasks() {
               ? emp.tasks.map((task) =>
                   (task.id || task._id) === editingTaskId
                     ? { ...task, ...editTaskData }
-                    : task
+                    : task,
                 )
-              : emp.tasks
-          }))
+              : emp.tasks,
+          })),
         );
 
         setAllTasks((prev) =>
           prev.map((task) =>
             (task._id || task.id) === editingTaskId
               ? { ...task, ...editTaskData }
-              : task
-          )
+              : task,
+          ),
         );
         closeEditTaskModal();
       }
@@ -379,8 +399,12 @@ export default function Tasks() {
   // Department CRUD Operations
   const handleAddDepartment = async (e) => {
     e.preventDefault();
-    
-    if (!departmentForm.name || !departmentForm.code || !departmentForm.description) {
+
+    if (
+      !departmentForm.name ||
+      !departmentForm.code ||
+      !departmentForm.description
+    ) {
       showToast("Please fill all required fields", "error");
       return;
     }
@@ -389,7 +413,7 @@ export default function Tasks() {
       setIsProcessing(true);
       const result = await departmentService.createDepartment(departmentForm);
       console.log(result);
-      
+
       if (result && result.success) {
         showToast("Department created successfully!", "success");
         setShowAddDepartmentModal(false);
@@ -398,7 +422,10 @@ export default function Tasks() {
       }
     } catch (err) {
       console.log("Error creating department:", err);
-      showToast(err?.response?.data?.message || "Failed to create department", "error");
+      showToast(
+        err?.response?.data?.message || "Failed to create department",
+        "error",
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -408,8 +435,12 @@ export default function Tasks() {
     e.preventDefault();
     e.stopPropagation();
     console.log("hit edit");
-    
-    if (!departmentForm.name || !departmentForm.code || !departmentForm.description) {
+
+    if (
+      !departmentForm.name ||
+      !departmentForm.code ||
+      !departmentForm.description
+    ) {
       showToast("Please fill all required fields", "error");
       return;
     }
@@ -418,7 +449,7 @@ export default function Tasks() {
       setIsProcessing(true);
       const result = await departmentService.updateDepartment(
         selectedDepartment._id,
-        departmentForm
+        departmentForm,
       );
       console.log(result);
       if (result && result.success) {
@@ -430,7 +461,10 @@ export default function Tasks() {
       }
     } catch (err) {
       console.log("Error updating department:", err);
-      showToast(err.response?.data?.message || "Failed to update department", "error");
+      showToast(
+        err.response?.data?.message || "Failed to update department",
+        "error",
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -440,17 +474,25 @@ export default function Tasks() {
     try {
       setIsProcessing(true);
       console.log("hit");
-      const result = await departmentService.deleteDepartment(selectedDepartment._id);
-      
+      const result = await departmentService.deleteDepartment(
+        selectedDepartment._id,
+      );
+
       if (result && result.success) {
-        showToast(result.message || "Department deleted successfully!", "success");
+        showToast(
+          result.message || "Department deleted successfully!",
+          "success",
+        );
         setShowDeleteDepartmentModal(false);
         setSelectedDepartment(null);
         getDepartmentTasks();
       }
     } catch (err) {
       console.log("Error deleting department:", err);
-      showToast(err.response?.data?.message || "Failed to delete department", "error");
+      showToast(
+        err.response?.data?.message || "Failed to delete department",
+        "error",
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -462,7 +504,7 @@ export default function Tasks() {
       name: dept.name,
       code: dept.code,
       description: dept.description || "",
-      manager: dept.manager?._id || ""
+      manager: dept.manager?._id || "",
     });
     setShowEditDepartmentModal(true);
   };
@@ -476,35 +518,43 @@ export default function Tasks() {
     const tasks = employee.tasks || [];
     return {
       total: tasks.length,
-      completed: tasks.filter(t => t.status === "completed").length,
-      pending: tasks.filter(t => t.status === "pending").length
+      completed: tasks.filter((t) => t.status === "completed").length,
+      pending: tasks.filter((t) => t.status === "pending").length,
     };
   };
 
   const getTotalStats = () => {
-    let total = 0, completed = 0, pending = 0;
-    
+    let total = 0,
+      completed = 0,
+      pending = 0;
+
     // Filter to show only employees (role === "employee")
-    employees.filter(emp => emp.role === "employee").forEach(emp => {
-      const stats = getTaskStats(emp);
-      total += stats.total;
-      completed += stats.completed;
-      pending += stats.pending;
-    });
-    
-    return { 
-      total, 
-      completed, 
+    employees
+      .filter((emp) => emp.role === "employee")
+      .forEach((emp) => {
+        const stats = getTaskStats(emp);
+        total += stats.total;
+        completed += stats.completed;
+        pending += stats.pending;
+      });
+
+    return {
+      total,
+      completed,
       pending,
       // Include both employees and Department Heads in total count
-      totalEmployees: employees.filter(emp => emp.role === "employee" || emp.role === "Department Head").length 
+      totalEmployees: employees.filter(
+        (emp) => emp.role === "employee" || emp.role === "Department Head",
+      ).length,
     };
   };
 
   const getHeadTaskStats = () => {
-    let total = 0, completed = 0, pending = 0;
-    
-    headTasks.forEach(task => {
+    let total = 0,
+      completed = 0,
+      pending = 0;
+
+    headTasks.forEach((task) => {
       total += 1;
       if (task.status === "completed") {
         completed += 1;
@@ -512,31 +562,37 @@ export default function Tasks() {
         pending += 1;
       }
     });
-    
+
     return { total, completed, pending };
   };
 
   const getDepartmentStats = (deptId) => {
-    const deptEmployees = employees.filter(emp => {
+    const deptEmployees = employees.filter((emp) => {
       // Handle both populated department (object) and non-populated (string/ObjectId)
-      if (emp.department && typeof emp.department === 'object') {
-        return emp.department._id === deptId || emp.department._id?.toString() === deptId?.toString();
+      if (emp.department && typeof emp.department === "object") {
+        return (
+          emp.department._id === deptId ||
+          emp.department._id?.toString() === deptId?.toString()
+        );
       }
-      return emp.department === deptId || emp.department?.toString() === deptId?.toString();
+      return (
+        emp.department === deptId ||
+        emp.department?.toString() === deptId?.toString()
+      );
     });
     // Include both employees and Department Heads for department stats
-    const deptEmployeesWithHeads = deptEmployees.filter(emp => 
-      emp.role === "employee" || emp.role === "Department Head"
+    const deptEmployeesWithHeads = deptEmployees.filter(
+      (emp) => emp.role === "employee" || emp.role === "Department Head",
     );
-    const deptTasks = allTasks.filter(task => 
-      deptEmployeesWithHeads.some(emp => emp._id === task.employee)
+    const deptTasks = allTasks.filter((task) =>
+      deptEmployeesWithHeads.some((emp) => emp._id === task.employee),
     );
-    
+
     return {
       totalEmployees: deptEmployeesWithHeads.length,
       totalTasks: deptTasks.length,
-      completed: deptTasks.filter(t => t.status === "completed").length,
-      pending: deptTasks.filter(t => t.status === "pending").length
+      completed: deptTasks.filter((t) => t.status === "completed").length,
+      pending: deptTasks.filter((t) => t.status === "pending").length,
     };
   };
 
@@ -547,10 +603,11 @@ export default function Tasks() {
     return "Not Allocated";
   };
 
-  const filteredTasks = selectedEmployee?.tasks?.filter(task => {
-    if (filterStatus === "All") return true;
-    return task.status === filterStatus.toLowerCase();
-  }) || [];
+  const filteredTasks =
+    selectedEmployee?.tasks?.filter((task) => {
+      if (filterStatus === "All") return true;
+      return task.status === filterStatus.toLowerCase();
+    }) || [];
 
   const headTaskItems = headTasks.map((task) => ({
     id: task._id || task.id,
@@ -591,7 +648,7 @@ export default function Tasks() {
     setHeadTaskUpdate({
       status: task.status === "completed" ? "completed" : "in-progress",
       comment: "",
-      file: null
+      file: null,
     });
     setIsHeadTaskModalOpen(true);
   };
@@ -623,7 +680,10 @@ export default function Tasks() {
   };
 
   const writeHeadTaskNotifications = (notifications) => {
-    localStorage.setItem("headTaskNotifications", JSON.stringify(notifications));
+    localStorage.setItem(
+      "headTaskNotifications",
+      JSON.stringify(notifications),
+    );
   };
 
   const submitHeadTaskUpdate = async () => {
@@ -637,15 +697,18 @@ export default function Tasks() {
     if (headTaskUpdate.file) {
       try {
         const formData = new FormData();
-        formData.append('file', headTaskUpdate.file);
-        const uploadResponse = await employeeService.uploadTaskFile(selectedHeadTask.id, formData);
+        formData.append("file", headTaskUpdate.file);
+        const uploadResponse = await employeeService.uploadTaskFile(
+          selectedHeadTask.id,
+          formData,
+        );
         if (uploadResponse?.success && uploadResponse?.data?.url) {
           attachmentUrl = uploadResponse.data.url;
           attachmentName = headTaskUpdate.file.name;
         }
       } catch (err) {
-        console.error('File upload failed:', err);
-        showToast('Failed to upload file', 'error');
+        console.error("File upload failed:", err);
+        showToast("Failed to upload file", "error");
         return;
       }
     }
@@ -668,11 +731,11 @@ export default function Tasks() {
       prev.map((task) =>
         (task._id || task.id) === selectedHeadTask.id
           ? { ...task, status: headTaskUpdate.status }
-          : task
-      )
+          : task,
+      ),
     );
     setSelectedHeadTask((prev) =>
-      prev ? { ...prev, status: headTaskUpdate.status } : prev
+      prev ? { ...prev, status: headTaskUpdate.status } : prev,
     );
 
     const updates = readHeadTaskUpdates();
@@ -713,11 +776,15 @@ export default function Tasks() {
       <>
         {/* Toast */}
         {toast.show && (
-          <div className={`fixed top-4 right-4 z-50 ${
-            toast.type === "error" ? "bg-red-500" : "bg-green-500"
-          } text-white px-4 sm:px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 sm:gap-3 animate-slideIn max-w-[90%] sm:max-w-md`}>
+          <div
+            className={`fixed top-4 right-4 z-50 ${
+              toast.type === "error" ? "bg-red-500" : "bg-green-500"
+            } text-white px-4 sm:px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 sm:gap-3 animate-slideIn max-w-[90%] sm:max-w-md`}
+          >
             <span className="text-xs sm:text-sm">{toast.message}</span>
-            <button onClick={() => setToast({ show: false, message: "", type: "" })}>
+            <button
+              onClick={() => setToast({ show: false, message: "", type: "" })}
+            >
               <X size={16} className="sm:w-[18px] sm:h-[18px]" />
             </button>
           </div>
@@ -729,11 +796,18 @@ export default function Tasks() {
             <div className="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
               <div className="sticky top-0 bg-white p-6 border-b rounded-t-xl">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-bold text-gray-900">Add New Department</h3>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Add New Department
+                  </h3>
                   <button
                     onClick={() => {
                       setShowAddDepartmentModal(false);
-                      setDepartmentForm({ name: "", code: "", description: "", manager: "" });
+                      setDepartmentForm({
+                        name: "",
+                        code: "",
+                        description: "",
+                        manager: "",
+                      });
                     }}
                     className="text-gray-400 hover:text-gray-600"
                   >
@@ -750,7 +824,12 @@ export default function Tasks() {
                   <input
                     type="text"
                     value={departmentForm.name}
-                    onChange={(e) => setDepartmentForm({ ...departmentForm, name: e.target.value })}
+                    onChange={(e) =>
+                      setDepartmentForm({
+                        ...departmentForm,
+                        name: e.target.value,
+                      })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="e.g., Engineering"
                     disabled={isProcessing}
@@ -764,7 +843,12 @@ export default function Tasks() {
                   <input
                     type="text"
                     value={departmentForm.code}
-                    onChange={(e) => setDepartmentForm({ ...departmentForm, code: e.target.value.toUpperCase() })}
+                    onChange={(e) =>
+                      setDepartmentForm({
+                        ...departmentForm,
+                        code: e.target.value.toUpperCase(),
+                      })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                     placeholder="e.g., ENG"
                     maxLength="10"
@@ -778,7 +862,12 @@ export default function Tasks() {
                   </label>
                   <textarea
                     value={departmentForm.description}
-                    onChange={(e) => setDepartmentForm({ ...departmentForm, description: e.target.value })}
+                    onChange={(e) =>
+                      setDepartmentForm({
+                        ...departmentForm,
+                        description: e.target.value,
+                      })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     placeholder="Enter department description"
                     rows="3"
@@ -792,14 +881,20 @@ export default function Tasks() {
                   </label>
                   <select
                     value={departmentForm.manager}
-                    onChange={(e) => setDepartmentForm({ ...departmentForm, manager: e.target.value })}
+                    onChange={(e) =>
+                      setDepartmentForm({
+                        ...departmentForm,
+                        manager: e.target.value,
+                      })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={isProcessing}
                   >
                     <option value="">Select Department Head</option>
                     {departmentHeads.map((head) => (
                       <option key={head._id} value={head._id}>
-                        {head.firstName} {head.lastName} - {head.employeeId || head.email}
+                        {head.firstName} {head.lastName} -{" "}
+                        {head.employeeId || head.email}
                       </option>
                     ))}
                   </select>
@@ -813,7 +908,12 @@ export default function Tasks() {
                     type="button"
                     onClick={() => {
                       setShowAddDepartmentModal(false);
-                      setDepartmentForm({ name: "", code: "", description: "", manager: "" });
+                      setDepartmentForm({
+                        name: "",
+                        code: "",
+                        description: "",
+                        manager: "",
+                      });
                     }}
                     disabled={isProcessing}
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium disabled:opacity-50"
@@ -849,12 +949,19 @@ export default function Tasks() {
             <div className="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
               <div className="sticky top-0 bg-white p-6 border-b rounded-t-xl">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-bold text-gray-900">Edit Department</h3>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Edit Department
+                  </h3>
                   <button
                     onClick={() => {
                       setShowEditDepartmentModal(false);
                       setSelectedDepartment(null);
-                      setDepartmentForm({ name: "", code: "", description: "", manager: "" });
+                      setDepartmentForm({
+                        name: "",
+                        code: "",
+                        description: "",
+                        manager: "",
+                      });
                     }}
                     className="text-gray-400 hover:text-gray-600"
                   >
@@ -871,7 +978,12 @@ export default function Tasks() {
                   <input
                     type="text"
                     value={departmentForm.name}
-                    onChange={(e) => setDepartmentForm({ ...departmentForm, name: e.target.value })}
+                    onChange={(e) =>
+                      setDepartmentForm({
+                        ...departmentForm,
+                        name: e.target.value,
+                      })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="e.g., Engineering"
                     disabled={isProcessing}
@@ -885,7 +997,12 @@ export default function Tasks() {
                   <input
                     type="text"
                     value={departmentForm.code}
-                    onChange={(e) => setDepartmentForm({ ...departmentForm, code: e.target.value.toUpperCase() })}
+                    onChange={(e) =>
+                      setDepartmentForm({
+                        ...departmentForm,
+                        code: e.target.value.toUpperCase(),
+                      })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                     placeholder="e.g., ENG"
                     maxLength="10"
@@ -899,7 +1016,12 @@ export default function Tasks() {
                   </label>
                   <textarea
                     value={departmentForm.description}
-                    onChange={(e) => setDepartmentForm({ ...departmentForm, description: e.target.value })}
+                    onChange={(e) =>
+                      setDepartmentForm({
+                        ...departmentForm,
+                        description: e.target.value,
+                      })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     placeholder="Enter department description"
                     rows="3"
@@ -913,14 +1035,20 @@ export default function Tasks() {
                   </label>
                   <select
                     value={departmentForm.manager}
-                    onChange={(e) => setDepartmentForm({ ...departmentForm, manager: e.target.value })}
+                    onChange={(e) =>
+                      setDepartmentForm({
+                        ...departmentForm,
+                        manager: e.target.value,
+                      })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     disabled={isProcessing}
                   >
                     <option value="">Select Department Head</option>
                     {departmentHeads.map((head) => (
                       <option key={head._id} value={head._id}>
-                        {head.firstName} {head.lastName} - {head.employeeId || head.email}
+                        {head.firstName} {head.lastName} -{" "}
+                        {head.employeeId || head.email}
                       </option>
                     ))}
                   </select>
@@ -935,7 +1063,12 @@ export default function Tasks() {
                     onClick={() => {
                       setShowEditDepartmentModal(false);
                       setSelectedDepartment(null);
-                      setDepartmentForm({ name: "", code: "", description: "", manager: "" });
+                      setDepartmentForm({
+                        name: "",
+                        code: "",
+                        description: "",
+                        manager: "",
+                      });
                     }}
                     disabled={isProcessing}
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 font-medium disabled:opacity-50"
@@ -971,7 +1104,9 @@ export default function Tasks() {
             <div className="bg-white rounded-xl w-full max-w-md">
               <div className="p-6 border-b">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-bold text-gray-900">Delete Department</h3>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Delete Department
+                  </h3>
                   <button
                     onClick={() => {
                       setShowDeleteDepartmentModal(false);
@@ -988,7 +1123,7 @@ export default function Tasks() {
                 <div className="flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mx-auto mb-4">
                   <AlertCircle className="text-red-600" size={32} />
                 </div>
-                
+
                 <p className="text-center text-gray-700 mb-2">
                   Are you sure you want to delete department:
                 </p>
@@ -996,10 +1131,12 @@ export default function Tasks() {
                   {selectedDepartment.name} ({selectedDepartment.code})?
                 </p>
                 <p className="text-center text-sm text-amber-600 mb-2">
-                  Warning: All employees assigned to this department will be unassigned.
+                  Warning: All employees assigned to this department will be
+                  unassigned.
                 </p>
                 <p className="text-center text-sm text-red-600 mb-6">
-                  This action cannot be undone. All associated data will be removed.
+                  This action cannot be undone. All associated data will be
+                  removed.
                 </p>
 
                 <div className="flex gap-3">
@@ -1039,7 +1176,7 @@ export default function Tasks() {
 
         <div className="min-h-screen bg-white">
           <AdminSidebar />
-          
+
           <div className="lg:ml-64 p-3 sm:p-6 lg:p-8">
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 rounded-2xl p-6 sm:p-8 text-white shadow-xl border border-white/20 mb-6">
@@ -1049,7 +1186,9 @@ export default function Tasks() {
                     <Building2 className="w-7 h-7" />
                   </div>
                   <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold">Department Management</h1>
+                    <h1 className="text-2xl sm:text-3xl font-bold">
+                      Department Management
+                    </h1>
                     <p className="text-blue-100 text-sm sm:text-base mt-1">
                       Manage departments, heads, and performance at a glance
                     </p>
@@ -1067,15 +1206,23 @@ export default function Tasks() {
 
               <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="bg-white/15 rounded-xl p-4 border border-white/20">
-                  <p className="text-xs uppercase tracking-wider text-blue-100">Departments</p>
-                  <p className="text-2xl font-bold mt-1">{departments.length}</p>
+                  <p className="text-xs uppercase tracking-wider text-blue-100">
+                    Departments
+                  </p>
+                  <p className="text-2xl font-bold mt-1">
+                    {departments.length}
+                  </p>
                 </div>
                 <div className="bg-white/15 rounded-xl p-4 border border-white/20">
-                  <p className="text-xs uppercase tracking-wider text-blue-100">Employees</p>
+                  <p className="text-xs uppercase tracking-wider text-blue-100">
+                    Employees
+                  </p>
                   <p className="text-2xl font-bold mt-1">{employees.length}</p>
                 </div>
                 <div className="bg-white/15 rounded-xl p-4 border border-white/20">
-                  <p className="text-xs uppercase tracking-wider text-blue-100">Tasks</p>
+                  <p className="text-xs uppercase tracking-wider text-blue-100">
+                    Tasks
+                  </p>
                   <p className="text-2xl font-bold mt-1">{allTasks.length}</p>
                 </div>
               </div>
@@ -1085,7 +1232,7 @@ export default function Tasks() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {departments.map((dept) => {
                 const stats = getDepartmentStats(dept._id);
-                
+
                 return (
                   <div
                     key={dept._id}
@@ -1094,43 +1241,49 @@ export default function Tasks() {
                   >
                     <div className="h-1.5 w-full rounded-full bg-gradient-to-r from-blue-600 via-cyan-500 to-emerald-400 mb-4 opacity-80"></div>
                     {/* Department Header */}
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3 flex-1">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-md">
-                          <Building2 className="w-6 h-6 text-white" />
+                    <div className="flex items-start justify-between gap-2 sm:gap-3 mb-4">
+                      {/* Left Section - Department Info */}
+                      <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                        <div className="w-10 h-10 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-lg sm:rounded-xl bg-gradient-to-br from-blue-600 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-md">
+                          <Building2 className="w-5 h-5 sm:w-5.5 sm:h-5.5 lg:w-6 lg:h-6 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-gray-900 text-base sm:text-lg truncate">
+                          <h3 className="font-bold text-gray-900 text-sm sm:text-base lg:text-lg truncate">
                             {dept.name}
                           </h3>
-                          <p className="text-xs text-gray-500 font-semibold">{dept.code}</p>
+                          <p className="text-[10px] sm:text-xs text-gray-500 font-semibold">
+                            {dept.code}
+                          </p>
                         </div>
                       </div>
-                      
-                      {/* Action Buttons */}
-                      <div className="flex gap-2 ml-2 flex-shrink-0">
+
+                      {/* Action Buttons - Properly aligned */}
+                      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0 self-center sm:self-start">
                         <button
                           type="button"
                           onClick={(e) => {
-                            e.stopPropagation()
-                            openEditModal(dept)
+                            e.stopPropagation();
+                            openEditModal(dept);
                           }}
-                          className="p-2 text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-1.5 sm:p-2 text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
                           title="Edit Department"
                         >
-                          <Edit size={18} />
+                          <Edit size={16} className="sm:w-[18px] sm:h-[18px]" />
                         </button>
 
                         <button
                           type="button"
                           onClick={(e) => {
-                            e.stopPropagation()
-                            openDeleteModal(dept)
+                            e.stopPropagation();
+                            openDeleteModal(dept);
                           }}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="Delete Department"
                         >
-                          <Trash2 size={18} />
+                          <Trash2
+                            size={16}
+                            className="sm:w-[18px] sm:h-[18px]"
+                          />
                         </button>
                       </div>
                     </div>
@@ -1140,7 +1293,9 @@ export default function Tasks() {
                       <div className="flex items-center gap-2 text-sm bg-slate-50 rounded-lg px-3 py-2">
                         <UserCircle className="w-4 h-4 text-blue-600 flex-shrink-0" />
                         <span className="text-gray-600">Head:</span>
-                        <span className={`font-semibold truncate ${dept.manager ? 'text-gray-900' : 'text-orange-600'}`}>
+                        <span
+                          className={`font-semibold truncate ${dept.manager ? "text-gray-900" : "text-orange-600"}`}
+                        >
                           {getDepartmentHead(dept)}
                         </span>
                       </div>
@@ -1150,26 +1305,42 @@ export default function Tasks() {
                     <div className="grid grid-cols-2 gap-3 mb-4">
                       <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-3 text-center">
                         <Users className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-                        <p className="text-xl font-bold text-gray-900">{stats.totalEmployees}</p>
-                        <p className="text-[10px] text-gray-600 mt-0.5">Employees</p>
+                        <p className="text-xl font-bold text-gray-900">
+                          {stats.totalEmployees}
+                        </p>
+                        <p className="text-[10px] text-gray-600 mt-0.5">
+                          Employees
+                        </p>
                       </div>
                       <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-3 text-center">
                         <ListTodo className="w-5 h-5 text-purple-600 mx-auto mb-1" />
-                        <p className="text-xl font-bold text-gray-900">{stats.totalTasks}</p>
-                        <p className="text-[10px] text-gray-600 mt-0.5">Total Tasks</p>
+                        <p className="text-xl font-bold text-gray-900">
+                          {stats.totalTasks}
+                        </p>
+                        <p className="text-[10px] text-gray-600 mt-0.5">
+                          Total Tasks
+                        </p>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
                       <div className="bg-gradient-to-br from-green-50 to-emerald-100 rounded-xl p-3 text-center">
                         <CheckCircle className="w-5 h-5 text-green-600 mx-auto mb-1" />
-                        <p className="text-xl font-bold text-green-600">{stats.completed}</p>
-                        <p className="text-[10px] text-gray-600 mt-0.5">Completed</p>
+                        <p className="text-xl font-bold text-green-600">
+                          {stats.completed}
+                        </p>
+                        <p className="text-[10px] text-gray-600 mt-0.5">
+                          Completed
+                        </p>
                       </div>
                       <div className="bg-gradient-to-br from-orange-50 to-amber-100 rounded-xl p-3 text-center">
                         <Clock className="w-5 h-5 text-orange-600 mx-auto mb-1" />
-                        <p className="text-xl font-bold text-orange-600">{stats.pending}</p>
-                        <p className="text-[10px] text-gray-600 mt-0.5">Pending</p>
+                        <p className="text-xl font-bold text-orange-600">
+                          {stats.pending}
+                        </p>
+                        <p className="text-[10px] text-gray-600 mt-0.5">
+                          Pending
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -1210,7 +1381,6 @@ export default function Tasks() {
   // Department Head View continues with the rest of the existing code...
   // (The rest remains the same as in your original file)
 
-
   const totalStats = getTotalStats();
 
   // Department Head View (unchanged)
@@ -1218,11 +1388,15 @@ export default function Tasks() {
     <>
       {/* Toast */}
       {toast.show && (
-        <div className={`fixed top-4 right-4 z-50 ${
-          toast.type === "error" ? "bg-red-500" : "bg-green-500"
-        } text-white px-4 sm:px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 sm:gap-3 animate-slideIn max-w-[90%] sm:max-w-md`}>
+        <div
+          className={`fixed top-4 right-4 z-50 ${
+            toast.type === "error" ? "bg-red-500" : "bg-green-500"
+          } text-white px-4 sm:px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 sm:gap-3 animate-slideIn max-w-[90%] sm:max-w-md`}
+        >
           <span className="text-xs sm:text-sm">{toast.message}</span>
-          <button onClick={() => setToast({ show: false, message: "", type: "" })}>
+          <button
+            onClick={() => setToast({ show: false, message: "", type: "" })}
+          >
             <X size={16} className="sm:w-[18px] sm:h-[18px]" />
           </button>
         </div>
@@ -1234,7 +1408,9 @@ export default function Tasks() {
           <div className="bg-white rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b p-3 sm:p-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-base sm:text-lg font-bold text-gray-900">Add New Task</h3>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900">
+                  Add New Task
+                </h3>
                 <button
                   onClick={() => setShowAddTaskModal(false)}
                   className="text-gray-400 hover:text-gray-600 p-1"
@@ -1252,7 +1428,9 @@ export default function Tasks() {
                 <input
                   type="text"
                   value={newTask.taskName}
-                  onChange={(e) => setNewTask({ ...newTask, taskName: e.target.value })}
+                  onChange={(e) =>
+                    setNewTask({ ...newTask, taskName: e.target.value })
+                  }
                   className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter task name"
                 />
@@ -1264,7 +1442,9 @@ export default function Tasks() {
                 </label>
                 <textarea
                   value={newTask.description}
-                  onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+                  onChange={(e) =>
+                    setNewTask({ ...newTask, description: e.target.value })
+                  }
                   className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                   rows="3"
                   placeholder="Enter task description"
@@ -1284,7 +1464,9 @@ export default function Tasks() {
                         ...newTask,
                         assignMode: e.target.checked ? "team" : "single",
                         employeeId: e.target.checked ? "" : newTask.employeeId,
-                        employeeIds: e.target.checked ? newTask.employeeIds : []
+                        employeeIds: e.target.checked
+                          ? newTask.employeeIds
+                          : [],
                       })
                     }
                     className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
@@ -1307,7 +1489,9 @@ export default function Tasks() {
                             onChange={(e) => {
                               const nextIds = e.target.checked
                                 ? [...newTask.employeeIds, emp._id]
-                                : newTask.employeeIds.filter((id) => id !== emp._id);
+                                : newTask.employeeIds.filter(
+                                    (id) => id !== emp._id,
+                                  );
                               setNewTask({ ...newTask, employeeIds: nextIds });
                             }}
                             className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
@@ -1322,7 +1506,9 @@ export default function Tasks() {
                 ) : (
                   <select
                     value={newTask.employeeId}
-                    onChange={(e) => setNewTask({ ...newTask, employeeId: e.target.value })}
+                    onChange={(e) =>
+                      setNewTask({ ...newTask, employeeId: e.target.value })
+                    }
                     className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="">Select Employee</option>
@@ -1350,8 +1536,8 @@ export default function Tasks() {
                           ? priority === "high"
                             ? "bg-red-600 text-white"
                             : priority === "medium"
-                            ? "bg-orange-600 text-white"
-                            : "bg-green-600 text-white"
+                              ? "bg-orange-600 text-white"
+                              : "bg-green-600 text-white"
                           : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
                     >
@@ -1369,7 +1555,9 @@ export default function Tasks() {
                   <input
                     type="date"
                     value={newTask.startDate}
-                    onChange={(e) => setNewTask({ ...newTask, startDate: e.target.value })}
+                    onChange={(e) =>
+                      setNewTask({ ...newTask, startDate: e.target.value })
+                    }
                     className="w-full px-2 sm:px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
@@ -1381,7 +1569,9 @@ export default function Tasks() {
                   <input
                     type="date"
                     value={newTask.dueDate}
-                    onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+                    onChange={(e) =>
+                      setNewTask({ ...newTask, dueDate: e.target.value })
+                    }
                     min={newTask.startDate}
                     className="w-full px-2 sm:px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
@@ -1411,7 +1601,7 @@ export default function Tasks() {
 
       <div className="min-h-screen bg-gray-50">
         <AdminSidebar />
-        
+
         <div className="lg:ml-64 p-3 sm:p-6 lg:p-8">
           {!selectedEmployee ? (
             <>
@@ -1427,7 +1617,8 @@ export default function Tasks() {
                         {departmentDetails?.name || "Department"} Tasks
                       </h1>
                       <p className="text-blue-100 text-xs sm:text-sm mt-1">
-                        Managed by {departmentDetails?.manager?.firstName} {departmentDetails?.manager?.lastName}
+                        Managed by {departmentDetails?.manager?.firstName}{" "}
+                        {departmentDetails?.manager?.lastName}
                       </p>
                     </div>
                   </div>
@@ -1463,155 +1654,171 @@ export default function Tasks() {
                   <div>
                     {headTab === "employees" ? (
                       <>
-                  {/* Stats Cards */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-5 sm:mb-6">
-                    <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
-                      <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mx-auto mb-2">
-                        <Users className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
-                        {totalStats.totalEmployees}
-                      </p>
-                      <p className="text-[10px] sm:text-xs text-gray-600 font-medium">Employees</p>
-                    </div>
+                        {/* Stats Cards */}
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-5 sm:mb-6">
+                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mx-auto mb-2">
+                              <Users className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
+                              {totalStats.totalEmployees}
+                            </p>
+                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
+                              Employees
+                            </p>
+                          </div>
 
-                    <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-purple-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
-                      <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mx-auto mb-2">
-                        <ListTodo className="w-5 h-5 text-purple-600" />
-                      </div>
-                      <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
-                        {totalStats.total}
-                      </p>
-                      <p className="text-[10px] sm:text-xs text-gray-600 font-medium">Total Tasks</p>
-                    </div>
-
-                    <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
-                      <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mx-auto mb-2">
-                        <CheckCircle className="w-5 h-5 text-green-600" />
-                      </div>
-                      <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-1">
-                        {totalStats.completed}
-                      </p>
-                      <p className="text-[10px] sm:text-xs text-gray-600 font-medium">Completed</p>
-                    </div>
-
-                    <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-orange-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
-                      <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center mx-auto mb-2">
-                        <Clock className="w-5 h-5 text-orange-600" />
-                      </div>
-                      <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600 mb-1">
-                        {totalStats.pending}
-                      </p>
-                      <p className="text-[10px] sm:text-xs text-gray-600 font-medium">Pending</p>
-                    </div>
-                  </div>
-
-                  {/* Employee Table */}
-                  <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 overflow-hidden">
-                    <div className="p-3 sm:p-4 border-b border-blue-100 flex items-center justify-between gap-3">
-                      <h2 className="text-base sm:text-lg font-bold text-gray-900">
-                        Department Employees
-                      </h2>
-                      <button
-                        onClick={() => {
-                          setNewTask({
-                            taskName: "",
-                            description: "",
-                            employeeId: "",
-                            employeeIds: [],
-                            assignMode: "single",
-                            status: "pending",
-                            priority: "medium",
-                            startDate: "",
-                            dueDate: ""
-                          });
-                          setShowAddTaskModal(true);
-                        }}
-                        className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-colors shadow-sm"
-                      >
-                        Assign Task
-                      </button>
-                    </div>
-                    
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 border-b">
-                          <tr>
-                            <th className="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                              Employee
-                            </th>
-                            <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-purple-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mx-auto mb-2">
+                              <ListTodo className="w-5 h-5 text-purple-600" />
+                            </div>
+                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
+                              {totalStats.total}
+                            </p>
+                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
                               Total Tasks
-                            </th>
-                            <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                            </p>
+                          </div>
+
+                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mx-auto mb-2">
+                              <CheckCircle className="w-5 h-5 text-green-600" />
+                            </div>
+                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-1">
+                              {totalStats.completed}
+                            </p>
+                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
                               Completed
-                            </th>
-                            <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                            </p>
+                          </div>
+
+                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-orange-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                            <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center mx-auto mb-2">
+                              <Clock className="w-5 h-5 text-orange-600" />
+                            </div>
+                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600 mb-1">
+                              {totalStats.pending}
+                            </p>
+                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
                               Pending
-                            </th>
-                            <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
-                              Action
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                          {employees
-      .filter((employee) => employee.role === "employee")
-      .map((employee) => {
-        const stats = getTaskStats(employee);
+                            </p>
+                          </div>
+                        </div>
 
-        return (
-          <tr key={employee._id} className="hover:bg-blue-50/60 transition-colors">
-            <td className="px-4 py-3">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm flex-shrink-0">
-                  {employee.firstName.charAt(0)}
-                </div>
-                <div>
-                  <p className="font-semibold text-gray-900 text-sm">
-                    {employee.firstName} {employee.lastName}
-                  </p>
-                  <p className="text-xs text-gray-600">
-                    {employee.employeeId} • {employee.position}
-                  </p>
-                </div>
-              </div>
-            </td>
+                        {/* Employee Table */}
+                        <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 overflow-hidden">
+                          <div className="p-3 sm:p-4 border-b border-blue-100 flex items-center justify-between gap-3">
+                            <h2 className="text-base sm:text-lg font-bold text-gray-900">
+                              Department Employees
+                            </h2>
+                            <button
+                              onClick={() => {
+                                setNewTask({
+                                  taskName: "",
+                                  description: "",
+                                  employeeId: "",
+                                  employeeIds: [],
+                                  assignMode: "single",
+                                  status: "pending",
+                                  priority: "medium",
+                                  startDate: "",
+                                  dueDate: "",
+                                });
+                                setShowAddTaskModal(true);
+                              }}
+                              className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-colors shadow-sm"
+                            >
+                              Assign Task
+                            </button>
+                          </div>
 
-            <td className="px-4 py-3 text-center">
-              <span className="text-base font-bold text-gray-900">
-                {stats.total}
-              </span>
-            </td>
+                          <div className="overflow-x-auto">
+                            <table className="w-full">
+                              <thead className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 border-b">
+                                <tr>
+                                  <th className="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                    Employee
+                                  </th>
+                                  <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                    Total Tasks
+                                  </th>
+                                  <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                    Completed
+                                  </th>
+                                  <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                    Pending
+                                  </th>
+                                  <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                    Action
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-gray-100">
+                                {employees
+                                  .filter(
+                                    (employee) => employee.role === "employee",
+                                  )
+                                  .map((employee) => {
+                                    const stats = getTaskStats(employee);
 
-            <td className="px-4 py-3 text-center">
-              <span className="text-base font-bold text-green-600">
-                {stats.completed}
-              </span>
-            </td>
+                                    return (
+                                      <tr
+                                        key={employee._id}
+                                        className="hover:bg-blue-50/60 transition-colors"
+                                      >
+                                        <td className="px-4 py-3">
+                                          <div className="flex items-center gap-3">
+                                            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm flex-shrink-0">
+                                              {employee.firstName.charAt(0)}
+                                            </div>
+                                            <div>
+                                              <p className="font-semibold text-gray-900 text-sm">
+                                                {employee.firstName}{" "}
+                                                {employee.lastName}
+                                              </p>
+                                              <p className="text-xs text-gray-600">
+                                                {employee.employeeId} •{" "}
+                                                {employee.position}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        </td>
 
-            <td className="px-4 py-3 text-center">
-              <span className="text-base font-bold text-orange-600">
-                {stats.pending}
-              </span>
-            </td>
+                                        <td className="px-4 py-3 text-center">
+                                          <span className="text-base font-bold text-gray-900">
+                                            {stats.total}
+                                          </span>
+                                        </td>
 
-            <td className="px-4 py-3 text-center">
-              <button
-                onClick={() => setSelectedEmployee(employee)}
-                className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-colors shadow-sm"
-              >
-                View Tasks
-              </button>
-            </td>
-          </tr>
-        );
-      })}
+                                        <td className="px-4 py-3 text-center">
+                                          <span className="text-base font-bold text-green-600">
+                                            {stats.completed}
+                                          </span>
+                                        </td>
 
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                                        <td className="px-4 py-3 text-center">
+                                          <span className="text-base font-bold text-orange-600">
+                                            {stats.pending}
+                                          </span>
+                                        </td>
+
+                                        <td className="px-4 py-3 text-center">
+                                          <button
+                                            onClick={() =>
+                                              setSelectedEmployee(employee)
+                                            }
+                                            className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-colors shadow-sm"
+                                          >
+                                            View Tasks
+                                          </button>
+                                        </td>
+                                      </tr>
+                                    );
+                                  })}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
                       </>
                     ) : (
                       <>
@@ -1624,7 +1831,9 @@ export default function Tasks() {
                             <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
                               {getHeadTaskStats().total}
                             </p>
-                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">Total Tasks</p>
+                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
+                              Total Tasks
+                            </p>
                           </div>
 
                           <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
@@ -1634,7 +1843,9 @@ export default function Tasks() {
                             <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-1">
                               {getHeadTaskStats().completed}
                             </p>
-                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">Completed</p>
+                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
+                              Completed
+                            </p>
                           </div>
 
                           <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-orange-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
@@ -1644,14 +1855,18 @@ export default function Tasks() {
                             <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600 mb-1">
                               {getHeadTaskStats().pending}
                             </p>
-                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">Pending</p>
+                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
+                              Pending
+                            </p>
                           </div>
                         </div>
 
                         <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 p-4 sm:p-6">
                           <div className="flex items-center justify-between mb-4">
                             <div>
-                              <h2 className="text-base sm:text-lg font-bold text-gray-900">My Tasks</h2>
+                              <h2 className="text-base sm:text-lg font-bold text-gray-900">
+                                My Tasks
+                              </h2>
                               <p className="text-xs sm:text-sm text-gray-600 mt-1">
                                 Tasks assigned by Admin to you.
                               </p>
@@ -1659,43 +1874,46 @@ export default function Tasks() {
                           </div>
 
                           {headTaskItems.length === 0 ? (
-                          <div className="text-center py-10 text-gray-500 text-sm">
-                            No tasks assigned yet.
-                          </div>
-                        ) : (
-                          <div className="grid gap-4">
-                            {headTaskItems.map((task) => (
-                              <div
-                                key={task.id}
-                                className="rounded-2xl border border-slate-200 bg-slate-50 p-4 hover:border-blue-200 transition-all"
-                              >
-                                <div className="flex items-start justify-between gap-3">
-                                  <div>
-                                    <p className="text-sm font-bold text-slate-900">{task.title}</p>
-                                    <p className="text-xs text-slate-500 mt-1">
-                                      {task.description || "No description provided."}
-                                    </p>
+                            <div className="text-center py-10 text-gray-500 text-sm">
+                              No tasks assigned yet.
+                            </div>
+                          ) : (
+                            <div className="grid gap-4">
+                              {headTaskItems.map((task) => (
+                                <div
+                                  key={task.id}
+                                  className="rounded-2xl border border-slate-200 bg-slate-50 p-4 hover:border-blue-200 transition-all"
+                                >
+                                  <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                      <p className="text-sm font-bold text-slate-900">
+                                        {task.title}
+                                      </p>
+                                      <p className="text-xs text-slate-500 mt-1">
+                                        {task.description ||
+                                          "No description provided."}
+                                      </p>
+                                    </div>
+                                    <span
+                                      className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getHeadStatusClass(
+                                        task.status,
+                                      )}`}
+                                    >
+                                      {formatHeadStatus(task.status)}
+                                    </span>
                                   </div>
-                                  <span
-                                    className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getHeadStatusClass(
-                                      task.status,
-                                    )}`}
-                                  >
-                                    {formatHeadStatus(task.status)}
-                                  </span>
+                                  <div className="flex items-center justify-end mt-4">
+                                    <button
+                                      className="text-xs font-semibold text-blue-600 hover:text-blue-700"
+                                      onClick={() => openHeadTaskDetails(task)}
+                                    >
+                                      View Details
+                                    </button>
+                                  </div>
                                 </div>
-                                <div className="flex items-center justify-end mt-4">
-                                  <button
-                                    className="text-xs font-semibold text-blue-600 hover:text-blue-700"
-                                    onClick={() => openHeadTaskDetails(task)}
-                                  >
-                                    View Details
-                                  </button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                              ))}
+                            </div>
+                          )}
                         </div>
                       </>
                     )}
@@ -1715,7 +1933,8 @@ export default function Tasks() {
                           {selectedHeadTask.title}
                         </h3>
                         <p className="mt-2 text-sm text-slate-600">
-                          {selectedHeadTask.description || "No description provided."}
+                          {selectedHeadTask.description ||
+                            "No description provided."}
                         </p>
                       </div>
                       <button
@@ -1728,7 +1947,9 @@ export default function Tasks() {
 
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
                       <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                        <p className="text-xs uppercase text-slate-500">Assigned</p>
+                        <p className="text-xs uppercase text-slate-500">
+                          Assigned
+                        </p>
                         <p className="text-sm font-semibold text-slate-900">
                           {formatHeadDate(selectedHeadTask.assignedDate)}
                         </p>
@@ -1740,7 +1961,9 @@ export default function Tasks() {
                         </p>
                       </div>
                       <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                        <p className="text-xs uppercase text-slate-500">Status</p>
+                        <p className="text-xs uppercase text-slate-500">
+                          Status
+                        </p>
                         <span
                           className={`mt-1 inline-flex px-2.5 py-1 rounded-full text-xs font-semibold ${getHeadStatusClass(
                             selectedHeadTask.status,
@@ -1752,10 +1975,14 @@ export default function Tasks() {
                     </div>
 
                     <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/40 p-4">
-                      <p className="text-xs uppercase text-blue-600 font-semibold tracking-wider">Update Progress</p>
+                      <p className="text-xs uppercase text-blue-600 font-semibold tracking-wider">
+                        Update Progress
+                      </p>
                       <div className="mt-3 grid gap-4 sm:grid-cols-2">
                         <div>
-                          <label className="block text-xs font-semibold text-slate-600 mb-2">Status</label>
+                          <label className="block text-xs font-semibold text-slate-600 mb-2">
+                            Status
+                          </label>
                           <select
                             value={headTaskUpdate.status}
                             onChange={(event) =>
@@ -1772,7 +1999,9 @@ export default function Tasks() {
                           </select>
                         </div>
                         <div className="sm:col-span-1">
-                          <label className="block text-xs font-semibold text-slate-600 mb-2">Comment</label>
+                          <label className="block text-xs font-semibold text-slate-600 mb-2">
+                            Comment
+                          </label>
                           <textarea
                             rows={3}
                             value={headTaskUpdate.comment}
@@ -1788,15 +2017,29 @@ export default function Tasks() {
                         </div>
                       </div>
                       <div className="mt-4">
-                        <label className="block text-xs font-semibold text-slate-600 mb-2">Attach File (Optional)</label>
+                        <label className="block text-xs font-semibold text-slate-600 mb-2">
+                          Attach File (Optional)
+                        </label>
                         <div className="flex items-center gap-3">
                           <label className="flex-1 cursor-pointer">
                             <div className="flex items-center gap-2 px-3 py-2 border-2 border-dashed border-slate-300 rounded-xl hover:border-blue-400 hover:bg-blue-50/30 transition-all">
-                              <svg className="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                              <svg
+                                className="w-5 h-5 text-slate-500"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                                />
                               </svg>
                               <span className="text-xs text-slate-600">
-                                {headTaskUpdate.file ? headTaskUpdate.file.name : 'Choose file...'}
+                                {headTaskUpdate.file
+                                  ? headTaskUpdate.file.name
+                                  : "Choose file..."}
                               </span>
                             </div>
                             <input
@@ -1815,7 +2058,10 @@ export default function Tasks() {
                             <button
                               type="button"
                               onClick={() =>
-                                setHeadTaskUpdate((prev) => ({ ...prev, file: null }))
+                                setHeadTaskUpdate((prev) => ({
+                                  ...prev,
+                                  file: null,
+                                }))
                               }
                               className="px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                             >
@@ -1852,13 +2098,14 @@ export default function Tasks() {
                   <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center text-white font-bold text-lg sm:text-xl lg:text-2xl shadow-md">
                     {selectedEmployee.firstName.charAt(0)}
                   </div>
-                  
+
                   <div>
                     <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
                       {selectedEmployee.firstName} {selectedEmployee.lastName}
                     </h2>
                     <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">
-                      {selectedEmployee.employeeId} • {selectedEmployee.position}
+                      {selectedEmployee.employeeId} •{" "}
+                      {selectedEmployee.position}
                     </p>
                   </div>
                 </div>
@@ -1869,7 +2116,7 @@ export default function Tasks() {
                       ...newTask,
                       employeeId: selectedEmployee._id,
                       employeeIds: [],
-                      assignMode: "single"
+                      assignMode: "single",
                     });
                     setShowAddTaskModal(true);
                   }}
@@ -1885,22 +2132,34 @@ export default function Tasks() {
                   <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mx-auto mb-2">
                     <ListTodo className="w-5 h-5 text-blue-600" />
                   </div>
-                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900">{getTaskStats(selectedEmployee).total}</p>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">Total</p>
+                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900">
+                    {getTaskStats(selectedEmployee).total}
+                  </p>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">
+                    Total
+                  </p>
                 </div>
                 <div className="bg-white/90 backdrop-blur rounded-2xl p-3 sm:p-4 text-center border border-green-100 shadow-lg hover:shadow-xl transition-all">
                   <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mx-auto mb-2">
                     <CheckCircle className="w-5 h-5 text-green-600" />
                   </div>
-                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">{getTaskStats(selectedEmployee).completed}</p>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">Done</p>
+                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">
+                    {getTaskStats(selectedEmployee).completed}
+                  </p>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">
+                    Done
+                  </p>
                 </div>
                 <div className="bg-white/90 backdrop-blur rounded-2xl p-3 sm:p-4 text-center border border-orange-100 shadow-lg hover:shadow-xl transition-all">
                   <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center mx-auto mb-2">
                     <Clock className="w-5 h-5 text-orange-600" />
                   </div>
-                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600">{getTaskStats(selectedEmployee).pending}</p>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">Pending</p>
+                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600">
+                    {getTaskStats(selectedEmployee).pending}
+                  </p>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">
+                    Pending
+                  </p>
                 </div>
               </div>
 
@@ -1923,8 +2182,13 @@ export default function Tasks() {
               <div className="space-y-3 sm:space-y-4">
                 {filteredTasks.length === 0 ? (
                   <div className="text-center py-10 sm:py-12 text-gray-500">
-                    <AlertCircle size={40} className="sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 opacity-30" />
-                    <p className="text-sm sm:text-base">No {filterStatus.toLowerCase()} tasks</p>
+                    <AlertCircle
+                      size={40}
+                      className="sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 opacity-30"
+                    />
+                    <p className="text-sm sm:text-base">
+                      No {filterStatus.toLowerCase()} tasks
+                    </p>
                   </div>
                 ) : (
                   filteredTasks.map((task) => (
@@ -1933,14 +2197,19 @@ export default function Tasks() {
                       className="border-2 border-gray-200 rounded-lg p-4 hover:shadow-lg transition-all hover:border-blue-300"
                     >
                       <div className="flex justify-between items-start mb-2 sm:mb-3">
-                        <h4 className="font-bold text-gray-900 text-sm sm:text-base flex-1 leading-tight">{task.taskName}</h4>
+                        <h4 className="font-bold text-gray-900 text-sm sm:text-base flex-1 leading-tight">
+                          {task.taskName}
+                        </h4>
                         <div className="flex items-center gap-2 ml-2">
-                          <span className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold whitespace-nowrap ${
-                            task.status === "completed"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-orange-100 text-orange-700"
-                          }`}>
-                            {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
+                          <span
+                            className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold whitespace-nowrap ${
+                              task.status === "completed"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-orange-100 text-orange-700"
+                            }`}
+                          >
+                            {task.status.charAt(0).toUpperCase() +
+                              task.status.slice(1)}
                           </span>
                           {(role === "Admin" || role === "Department Head") && (
                             <button
@@ -1954,7 +2223,9 @@ export default function Tasks() {
                           )}
                           {(role === "Admin" || role === "Department Head") && (
                             <button
-                              onClick={() => handleDeleteTask(task.id || task._id)}
+                              onClick={() =>
+                                handleDeleteTask(task.id || task._id)
+                              }
                               disabled={isProcessing}
                               className="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors disabled:opacity-60"
                               title="Delete task"
@@ -1964,27 +2235,38 @@ export default function Tasks() {
                           )}
                         </div>
                       </div>
-                      
-                      <span className={`inline-block px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold mb-2 sm:mb-3 ${
-                        task.priority === "high"
-                          ? "bg-red-100 text-red-700"
-                          : task.priority === "medium"
-                          ? "bg-orange-100 text-orange-700"
-                          : "bg-green-100 text-green-700"
-                      }`}>
-                        {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Priority
+
+                      <span
+                        className={`inline-block px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold mb-2 sm:mb-3 ${
+                          task.priority === "high"
+                            ? "bg-red-100 text-red-700"
+                            : task.priority === "medium"
+                              ? "bg-orange-100 text-orange-700"
+                              : "bg-green-100 text-green-700"
+                        }`}
+                      >
+                        {task.priority.charAt(0).toUpperCase() +
+                          task.priority.slice(1)}{" "}
+                        Priority
                       </span>
-                      
-                      <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3 leading-relaxed">{task.description}</p>
-                      
+
+                      <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3 leading-relaxed">
+                        {task.description}
+                      </p>
+
                       <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
                         <div className="flex items-center gap-1.5">
                           <Calendar size={14} className="flex-shrink-0" />
-                          <span className="font-medium">Start: {new Date(task.startDate).toLocaleDateString()}</span>
+                          <span className="font-medium">
+                            Start:{" "}
+                            {new Date(task.startDate).toLocaleDateString()}
+                          </span>
                         </div>
                         <div className="flex items-center gap-1.5">
                           <Calendar size={14} className="flex-shrink-0" />
-                          <span className="font-medium">Due: {new Date(task.dueDate).toLocaleDateString()}</span>
+                          <span className="font-medium">
+                            Due: {new Date(task.dueDate).toLocaleDateString()}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -2002,7 +2284,9 @@ export default function Tasks() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h3 className="text-lg font-bold text-slate-900">Edit Task</h3>
-                <p className="text-xs text-slate-500 mt-1">Update task details for this employee.</p>
+                <p className="text-xs text-slate-500 mt-1">
+                  Update task details for this employee.
+                </p>
               </div>
               <button
                 onClick={closeEditTaskModal}
@@ -2014,24 +2298,34 @@ export default function Tasks() {
 
             <div className="mt-5 grid grid-cols-1 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-2">Task name</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-2">
+                  Task name
+                </label>
                 <input
                   type="text"
                   value={editTaskData.taskName}
                   onChange={(event) =>
-                    setEditTaskData((prev) => ({ ...prev, taskName: event.target.value }))
+                    setEditTaskData((prev) => ({
+                      ...prev,
+                      taskName: event.target.value,
+                    }))
                   }
                   className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-2">Description</label>
+                <label className="block text-xs font-semibold text-slate-600 mb-2">
+                  Description
+                </label>
                 <textarea
                   rows={3}
                   value={editTaskData.description}
                   onChange={(event) =>
-                    setEditTaskData((prev) => ({ ...prev, description: event.target.value }))
+                    setEditTaskData((prev) => ({
+                      ...prev,
+                      description: event.target.value,
+                    }))
                   }
                   className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
                 />
@@ -2039,11 +2333,16 @@ export default function Tasks() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-2">Priority</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-2">
+                    Priority
+                  </label>
                   <select
                     value={editTaskData.priority}
                     onChange={(event) =>
-                      setEditTaskData((prev) => ({ ...prev, priority: event.target.value }))
+                      setEditTaskData((prev) => ({
+                        ...prev,
+                        priority: event.target.value,
+                      }))
                     }
                     className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
                   >
@@ -2053,11 +2352,16 @@ export default function Tasks() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-2">Status</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-2">
+                    Status
+                  </label>
                   <select
                     value={editTaskData.status}
                     onChange={(event) =>
-                      setEditTaskData((prev) => ({ ...prev, status: event.target.value }))
+                      setEditTaskData((prev) => ({
+                        ...prev,
+                        status: event.target.value,
+                      }))
                     }
                     className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
                   >
@@ -2070,24 +2374,34 @@ export default function Tasks() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-2">Start date</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-2">
+                    Start date
+                  </label>
                   <input
                     type="date"
                     value={editTaskData.startDate}
                     onChange={(event) =>
-                      setEditTaskData((prev) => ({ ...prev, startDate: event.target.value }))
+                      setEditTaskData((prev) => ({
+                        ...prev,
+                        startDate: event.target.value,
+                      }))
                     }
                     className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-2">Due date</label>
+                  <label className="block text-xs font-semibold text-slate-600 mb-2">
+                    Due date
+                  </label>
                   <input
                     type="date"
                     value={editTaskData.dueDate}
                     min={editTaskData.startDate || undefined}
                     onChange={(event) =>
-                      setEditTaskData((prev) => ({ ...prev, dueDate: event.target.value }))
+                      setEditTaskData((prev) => ({
+                        ...prev,
+                        dueDate: event.target.value,
+                      }))
                     }
                     className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
                   />
