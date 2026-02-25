@@ -435,8 +435,13 @@ const deleteProject = async (req, res, next) => {
     }
 
     if (userRole === "Department Head") {
-      const headDepartmentId = req.user?.department?.toString();
-      if (!headDepartmentId || project.department.toString() !== headDepartmentId) {
+      const currentUser = await User.findById(req.user._id);
+      const headDepartmentId = currentUser?.department?.toString();
+      const projectDeptId = project.department && project.department._id 
+          ? project.department._id.toString() 
+          : project.department?.toString();
+
+      if (!headDepartmentId || projectDeptId !== headDepartmentId) {
         return res.status(403).json({
           success: false,
           message: "Access denied. Department Heads can only delete projects in their department."

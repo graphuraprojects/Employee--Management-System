@@ -458,10 +458,10 @@ export default function TaskCenter() {
               </div>
             </div>
             {/* Tab Bar */}
-            <div className="flex gap-2 mt-6">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-2 mt-6">
               <button
                 onClick={() => setActiveTab("assigned")}
-                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                 className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all w-full sm:w-auto ${
                   activeTab === "assigned"
                     ? "bg-white text-blue-600 shadow-md"
                     : "text-white/90 hover:bg-white/15"
@@ -471,7 +471,7 @@ export default function TaskCenter() {
               </button>
               <button
                 onClick={() => setActiveTab("assign")}
-                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
+                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all w-full sm:w-auto ${
                   activeTab === "assign"
                     ? "bg-white text-blue-600 shadow-md"
                     : "text-white/90 hover:bg-white/15"
