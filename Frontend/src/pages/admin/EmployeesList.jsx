@@ -183,7 +183,7 @@ export default function EmployeesList() {
       <AdminSidebar />
 
       {/* Main Content Area */}
-      <div className="main-content w-full">
+      <div className="main-content w-full mt-12 md:mt-10 lg:mt-0">
         {/* Top Navigation */}
 
         {/* Main Content */}

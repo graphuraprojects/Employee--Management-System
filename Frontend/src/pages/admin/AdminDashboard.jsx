@@ -325,9 +325,9 @@ const AdminDashboard = () => {
   return (
     <>
       <AdminSidebar />
-      <div className="dashboard-wrapper bg-white min-h-screen relative">
-        <div className="header-wrapper w-full bg-transparent px-4 sm:px-6 lg:px-10 py-8 border-b border-gray-200">
-          <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 rounded-2xl shadow-lg border border-white/20 px-4 sm:px-5 md:px-6 py-4 sm:py-5">
+      <div className="dashboard-wrapper bg-white min-h-screen relative mt-12 md:mt-10 lg:mt-0 xl:mt-0">
+        <div className="header-wrapper w-full bg-transparent px-4 sm:px-6 lg:px-10 !py-6 border-b border-gray-200">
+          <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 rounded-2xl shadow-lg border border-white/20 px-4 sm:px-5 md:px-6 sm:py-5">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-5">
               {/* WELCOME SECTION */}
               <div className="flex items-center gap-3 sm:gap-4 w-full md:w-auto">

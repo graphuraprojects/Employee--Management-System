@@ -681,7 +681,7 @@ export default function DepartmentHeadProjects() {
         </div>
       )}
 
-      <main className="px-4 pb-16 pt-24 sm:px-6 lg:px-10 lg:pt-10 lg:ml-64">
+      <main className="px-4 py-10 sm:px-6 lg:px-10 lg:pt-10 lg:ml-64 mt-10 md:mt-10 lg:mt-0">
         <header className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-700 via-blue-600 to-blue-400 px-6 py-8 text-white shadow-2xl sm:px-8">
           <div className="absolute -right-20 -top-20 h-52 w-52 rounded-full bg-white/10 blur-3xl" />
           <div className="absolute -left-20 -bottom-16 h-56 w-56 rounded-full bg-white/10 blur-3xl" />

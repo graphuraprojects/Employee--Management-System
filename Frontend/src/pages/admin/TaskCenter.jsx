@@ -426,13 +426,13 @@ export default function TaskCenter() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/40 to-white">
       <AdminSidebar />
 
-       <main className="lg:ml-64 p-4 sm:p-6 lg:p-8 pl-12 sm:pl-6">
+      <main className="lg:ml-64 p-4 sm:p-6 lg:p-8 mt-12 md:mt-10 lg:mt-0">
         <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 rounded-3xl shadow-xl border border-white/20 px-6 sm:px-8 py-7 text-white relative overflow-hidden">
           <div className="absolute -top-10 -right-10 w-36 h-36 bg-white/15 rounded-full blur-2xl" />
           <div className="absolute -bottom-12 -left-10 w-44 h-44 bg-white/15 rounded-full blur-2xl" />
           <div className="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center border border-white/30 shadow-md">
+              <div className="w-16 lg:w-14 md:w-16 h-14 rounded-2xl bg-white/20 flex items-center justify-center border border-white/30 shadow-md">
                 <ClipboardCheck className="text-white" />
               </div>
               <div>
