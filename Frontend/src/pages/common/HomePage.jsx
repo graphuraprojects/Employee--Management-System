@@ -316,91 +316,94 @@ function DashboardCard() {
 // feature card with glow and wash hover effect
 
 function FeatureCard({ icon, title, desc, tag, delay }) {
-  const [hov, setHov] = useState(false);
+  const [hover, setHover] = useState(false);
+
   return (
     <div
-      className="relative group bg-white rounded-2xl p-7 border cursor-pointer overflow-hidden"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      className="relative group rounded-2xl p-[1px] cursor-pointer overflow-hidden"
       style={{
-        transition: "all 0.4s cubic-bezier(0.34,1.56,0.64,1)",
-        transform: hov ? "translateY(-9px)" : "translateY(0)",
-        borderColor: hov ? "#93c5fd" : "#e2e8f0",
-        boxShadow: hov
-          ? "0 24px 60px rgba(59,130,246,0.16), 0 0 0 1px rgba(147,197,253,0.4)"
-          : "0 2px 16px rgba(0,0,0,0.04)",
+        background: hover
+          ? "linear-gradient(135deg,#3b82f6,#60a5fa,#2563eb)"
+          : "linear-gradient(135deg,#e2e8f0,#e2e8f0)",
+        transition: "all 0.4s ease",
         animationDelay: `${delay}s`,
       }}
-      onMouseEnter={() => setHov(true)}
-      onMouseLeave={() => setHov(false)}
     >
-      {/* Wash on hover */}
-
+      {/* Inner Card */}
       <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl"
+        className="relative bg-white rounded-2xl p-7 h-full transition-all duration-500"
         style={{
-          background:
-            "linear-gradient(135deg,rgba(239,246,255,0.95) 0%,rgba(219,234,254,0.7) 100%)",
+          transform: hover ? "translateY(-10px)" : "translateY(0)",
+          boxShadow: hover
+            ? "0 25px 60px rgba(37,99,235,0.25)"
+            : "0 4px 20px rgba(0,0,0,0.05)",
         }}
-      />
+      >
+        {/* Top Row → TAG + ICON */}
+        <div className="relative z-10 flex items-center justify-between mb-4">
+          {/* Tag */}
+          {tag && (
+            <span
+              className="text-xs font-semibold uppercase tracking-wide px-4 py-1.5 rounded-full border transition-all duration-300"
+              style={{
+                background: hover ? "#3b82f6" : "#eff6ff",
+                color: hover ? "white" : "#2563eb",
+                borderColor: "#bfdbfe",
+                boxShadow: hover ? "0 8px 20px rgba(59,130,246,0.3)" : "none",
+                transform: hover ? "scale(1.05)" : "scale(1)",
+              }}
+            >
+              {tag}
+            </span>
+          )}
 
-      {/* Glow corner */}
-      <div
-        className="absolute -top-10 -right-10 w-28 h-28 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500 blur-2xl pointer-events-none"
-        style={{ background: "rgba(59,130,246,0.2)" }}
-      />
-
-      {tag && (
-        <div className="relative z-10 flex items-center gap-10  mb-4 sm:mb-5">
-          <span
-            className="inline-block text-[8px] xs:text-[9px] sm:text-[10px] font-bold uppercase tracking-widest px-2 sm:px-2.5 py-1 rounded-full border whitespace-nowrap"
-            style={{
-              color: "#2563eb",
-              background: "#eff6ff",
-              borderColor: "#bfdbfe",
-            }}
-          >
-            {tag}
-          </span>
-
+          {/* Icon */}
           <div
-            className="w-8 h-8 sm:w-14 sm:h-14 md:w-12 md:h-12 lg:w-14 lg:h-14 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center transition-all duration-400 flex-shrink-0"
+            className="w-12 h-12 rounded-xl flex items-center justify-center text-xl transition-all duration-500"
             style={{
-              background: hov
+              background: hover
                 ? "linear-gradient(135deg,#3b82f6,#1d4ed8)"
                 : "linear-gradient(135deg,#dbeafe,#bfdbfe)",
-              color: hov ? "white" : "#2563eb",
-              boxShadow: hov ? "0 8px 24px rgba(59,130,246,0.4)" : "none",
-              transform: hov
-                ? "rotate(5deg) scale(1.05)"
-                : "rotate(0) scale(1)",
-              transition: "all 0.35s cubic-bezier(0.34,1.56,0.64,1)",
+              color: hover ? "white" : "#2563eb",
+              transform: hover ? "rotate(8deg) scale(1.1)" : "rotate(0)",
+              boxShadow: hover ? "0 10px 25px rgba(59,130,246,0.35)" : "none",
             }}
           >
-            <span className="text-sm sm:text-base md:text-lg lg:text-xl">
-              {icon}
-            </span>
+            {icon}
           </div>
         </div>
-      )}
 
-      <h3
-        className="relative z-10 text-lg font-bold mb-2.5 transition-colors duration-300"
-        style={{ color: hov ? "#1d4ed8" : "#0f172a" }}
-      >
-        {title}
-      </h3>
-      <p
-        className="relative z-10 text-sm leading-relaxed"
-        style={{ color: "#64748b" }}
-      >
-        {desc}
-      </p>
+        {/* CENTER HEADING */}
+        <h3
+          className="relative z-10 text-lg font-bold text-center mb-3 transition-all duration-300"
+          style={{
+            color: hover ? "#1d4ed8" : "#0f172a",
+            letterSpacing: hover ? "0.3px" : "0px",
+          }}
+        >
+          {title}
+        </h3>
+
+        {/* Description */}
+        <p className="relative z-10 text-sm leading-relaxed text-slate-500">
+          {desc}
+        </p>
+
+        {/* Bottom Accent Line */}
+        <div
+          className="absolute bottom-0 left-0 h-1 rounded-b-2xl transition-all duration-500"
+          style={{
+            width: hover ? "100%" : "0%",
+            background: "linear-gradient(90deg,#3b82f6,#1d4ed8)",
+          }}
+        />
+      </div>
     </div>
   );
 }
-
-/* ══════════════════════════════════════════
-   MAIN PAGE
-══════════════════════════════════════════ */
+// main content
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -445,42 +448,42 @@ export default function HomePage() {
     {
       icon: <Lock size={24} />,
       title: "Secure Authentication",
-      desc: "We provide bank-grade multi-factor authentication (MFA) and single sign-on (SSO) secured by a zero-trust architecture and granular role-based access controls.",
+      desc: "Enterprise-grade multi-factor authentication (MFA) and seamless single sign-on (SSO) powered by zero-trust security architecture and granular role-based access controls.",
       tag: "Security",
       delay: 0.05,
     },
     {
       icon: <Ticket size={24} />,
       title: "Smart Support Tickets",
-      desc: "Employees can raise support tickets that are first reviewed by their department head and then automatically forwarded to the admin for final action, ensuring transparency and faster resolution.",
+      desc: "Streamlined ticket management with hierarchical approvals, automated routing and real-time status tracking for faster, transparent issue resolution.",
       tag: "Core",
       delay: 0.1,
     },
     {
       icon: <IndianRupee size={24} />,
       title: "Payroll Automation",
-      desc: "Multi-currency global payroll with full tax compliance, automated deductions and instant payslips.",
+      desc: "Fully automated global payroll processing with multi-currency support, tax compliance management and instant digital payslip generation.",
       tag: "Finance",
       delay: 0.15,
     },
     {
       icon: <TrendingUp size={24} />,
       title: "Performance KPIs",
-      desc: "360° feedback loops, goal tracking, quarterly review cycles and full OKR management suite.",
+      desc: "Comprehensive performance tracking with goal alignment, 360° feedback systems and structured quarterly review cycles for measurable growth.",
       tag: "Growth",
       delay: 0.2,
     },
     {
       icon: <Globe size={24} />,
       title: "Global Compliance",
-      desc: "Auto-updated tax laws and labor regulations with audit-ready reporting across 150+ countries.",
+      desc: "Automated compliance monitoring with real-time regulatory updates, audit-ready reporting and workforce governance across 150+ countries.",
       tag: "Legal",
       delay: 0.25,
     },
     {
       icon: <Cpu size={24} />,
       title: "AI Analytics",
-      desc: "Predictive attrition alerts, intelligent scheduling suggestions and natural language HR queries.",
+      desc: "Advanced workforce intelligence powered by predictive analytics, smart scheduling insights and natural language HR query capabilities.",
       tag: "AI",
       delay: 0.3,
     },
