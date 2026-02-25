@@ -1624,7 +1624,7 @@ export default function SecureSalaryManagement() {
         )}
 
         {/* Page Content */}
-        <div className="p-4 sm:p-6">
+        <div className="p-4 sm:p-6 mt-12 md:mt-10 lg:mt-0">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 rounded-2xl shadow-2xl p-5 sm:p-6 mb-4 sm:mb-6 border border-white/20 text-white relative overflow-hidden">
             <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-white/10 blur-2xl" />

@@ -23,7 +23,6 @@ import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function Tasks() {
-  
   const location = useLocation();
   const [departmentDetails, setDepartmentDetails] = useState(null);
   const [departments, setDepartments] = useState([]);
@@ -1606,678 +1605,688 @@ export default function Tasks() {
         <AdminSidebar />
 
         <div className="lg:ml-64 p-3 sm:p-6 lg:p-8">
-          {!selectedEmployee ? (
-            <>
-              {/* Header */}
-              <div className="mb-6">
-                <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 rounded-2xl p-6 sm:p-8 text-white shadow-xl border border-white/20">
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center border border-white/30">
-                      <Building2 className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h1 className="text-xl sm:text-2xl font-bold">
-                        {departmentDetails?.name || "Department"} Tasks
-                      </h1>
-                      <p className="text-blue-100 text-xs sm:text-sm mt-1">
-                        Managed by {departmentDetails?.manager?.firstName}{" "}
-                        {departmentDetails?.manager?.lastName}
-                      </p>
+          <section className="mt-12 md:mt-10 lg:mt-0">
+            {!selectedEmployee ? (
+              <>
+                {/* Header */}
+                <div className="mb-6">
+                  <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 rounded-2xl p-6 sm:p-8 text-white shadow-xl border border-white/20">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center border border-white/30">
+                        <Building2 className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h1 className="text-xl sm:text-2xl font-bold">
+                          {departmentDetails?.name || "Department"} Tasks
+                        </h1>
+                        <p className="text-blue-100 text-xs sm:text-sm mt-1">
+                          Managed by {departmentDetails?.manager?.firstName}{" "}
+                          {departmentDetails?.manager?.lastName}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="relative overflow-hidden bg-white/90 backdrop-blur rounded-3xl border border-blue-100 shadow-xl p-4 sm:p-6">
-                <div className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full bg-blue-200/40 blur-3xl" />
-                <div className="pointer-events-none absolute -bottom-20 left-10 h-40 w-40 rounded-full bg-indigo-200/40 blur-3xl" />
+                <div className="relative overflow-hidden bg-white/90 backdrop-blur rounded-3xl border border-blue-100 shadow-xl p-4 sm:p-6">
+                  <div className="pointer-events-none absolute -top-16 -right-16 h-40 w-40 rounded-full bg-blue-200/40 blur-3xl" />
+                  <div className="pointer-events-none absolute -bottom-20 left-10 h-40 w-40 rounded-full bg-indigo-200/40 blur-3xl" />
 
-                <div className="relative flex flex-col gap-5">
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-                    <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200/70 bg-white/90 p-2 shadow-sm w-full lg:max-w-md">
-                      {[
-                        { key: "employees", label: "Employees Tasks" },
-                        { key: "my", label: "My Tasks" },
-                      ].map((tab) => (
-                        <button
-                          key={tab.key}
-                          onClick={() => setHeadTab(tab.key)}
-                          className={`flex-1 min-w-[140px] px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                            headTab === tab.key
-                              ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md"
-                              : "text-slate-600 hover:bg-slate-50"
-                          }`}
-                        >
-                          {tab.label}
-                        </button>
-                      ))}
+                  <div className="relative flex flex-col gap-5">
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                      <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200/70 bg-white/90 p-2 shadow-sm w-full lg:max-w-md">
+                        {[
+                          { key: "employees", label: "Employees Tasks" },
+                          { key: "my", label: "My Tasks" },
+                        ].map((tab) => (
+                          <button
+                            key={tab.key}
+                            onClick={() => setHeadTab(tab.key)}
+                            className={`flex-1 min-w-[140px] px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+                              headTab === tab.key
+                                ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md"
+                                : "text-slate-600 hover:bg-slate-50"
+                            }`}
+                          >
+                            {tab.label}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
 
-                  <div>
-                    {headTab === "employees" ? (
-                      <>
-                        {/* Stats Cards */}
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-5 sm:mb-6">
-                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
-                            <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mx-auto mb-2">
-                              <Users className="w-5 h-5 text-blue-600" />
+                    <div>
+                      {headTab === "employees" ? (
+                        <>
+                          {/* Stats Cards */}
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-5 sm:mb-6">
+                            <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mx-auto mb-2">
+                                <Users className="w-5 h-5 text-blue-600" />
+                              </div>
+                              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
+                                {totalStats.totalEmployees}
+                              </p>
+                              <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
+                                Employees
+                              </p>
                             </div>
-                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
-                              {totalStats.totalEmployees}
-                            </p>
-                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
-                              Employees
-                            </p>
-                          </div>
 
-                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-purple-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
-                            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mx-auto mb-2">
-                              <ListTodo className="w-5 h-5 text-purple-600" />
+                            <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-purple-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                              <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mx-auto mb-2">
+                                <ListTodo className="w-5 h-5 text-purple-600" />
+                              </div>
+                              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
+                                {totalStats.total}
+                              </p>
+                              <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
+                                Total Tasks
+                              </p>
                             </div>
-                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
-                              {totalStats.total}
-                            </p>
-                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
-                              Total Tasks
-                            </p>
-                          </div>
 
-                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
-                            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mx-auto mb-2">
-                              <CheckCircle className="w-5 h-5 text-green-600" />
+                            <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mx-auto mb-2">
+                                <CheckCircle className="w-5 h-5 text-green-600" />
+                              </div>
+                              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-1">
+                                {totalStats.completed}
+                              </p>
+                              <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
+                                Completed
+                              </p>
                             </div>
-                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-1">
-                              {totalStats.completed}
-                            </p>
-                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
-                              Completed
-                            </p>
-                          </div>
 
-                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-orange-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
-                            <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center mx-auto mb-2">
-                              <Clock className="w-5 h-5 text-orange-600" />
-                            </div>
-                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600 mb-1">
-                              {totalStats.pending}
-                            </p>
-                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
-                              Pending
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Employee Table */}
-                        <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 overflow-hidden">
-                          <div className="p-3 sm:p-4 border-b border-blue-100 flex items-center justify-between gap-3">
-                            <h2 className="text-base sm:text-lg font-bold text-gray-900">
-                              Department Employees
-                            </h2>
-                            <button
-                              onClick={() => {
-                                setNewTask({
-                                  taskName: "",
-                                  description: "",
-                                  employeeId: "",
-                                  employeeIds: [],
-                                  assignMode: "single",
-                                  status: "pending",
-                                  priority: "medium",
-                                  startDate: "",
-                                  dueDate: "",
-                                });
-                                setShowAddTaskModal(true);
-                              }}
-                              className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-colors shadow-sm"
-                            >
-                              Assign Task
-                            </button>
-                          </div>
-
-                          <div className="overflow-x-auto">
-                            <table className="w-full">
-                              <thead className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 border-b">
-                                <tr>
-                                  <th className="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
-                                    Employee
-                                  </th>
-                                  <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
-                                    Total Tasks
-                                  </th>
-                                  <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
-                                    Completed
-                                  </th>
-                                  <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
-                                    Pending
-                                  </th>
-                                  <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
-                                    Action
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody className="divide-y divide-gray-100">
-                                {employees
-                                  .filter(
-                                    (employee) => employee.role === "employee",
-                                  )
-                                  .map((employee) => {
-                                    const stats = getTaskStats(employee);
-
-                                    return (
-                                      <tr
-                                        key={employee._id}
-                                        className="hover:bg-blue-50/60 transition-colors"
-                                      >
-                                        <td className="px-4 py-3">
-                                          <div className="flex items-center gap-3">
-                                            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm flex-shrink-0">
-                                              {employee.firstName.charAt(0)}
-                                            </div>
-                                            <div>
-                                              <p className="font-semibold text-gray-900 text-sm">
-                                                {employee.firstName}{" "}
-                                                {employee.lastName}
-                                              </p>
-                                              <p className="text-xs text-gray-600">
-                                                {employee.employeeId} •{" "}
-                                                {employee.position}
-                                              </p>
-                                            </div>
-                                          </div>
-                                        </td>
-
-                                        <td className="px-4 py-3 text-center">
-                                          <span className="text-base font-bold text-gray-900">
-                                            {stats.total}
-                                          </span>
-                                        </td>
-
-                                        <td className="px-4 py-3 text-center">
-                                          <span className="text-base font-bold text-green-600">
-                                            {stats.completed}
-                                          </span>
-                                        </td>
-
-                                        <td className="px-4 py-3 text-center">
-                                          <span className="text-base font-bold text-orange-600">
-                                            {stats.pending}
-                                          </span>
-                                        </td>
-
-                                        <td className="px-4 py-3 text-center">
-                                          <button
-                                            onClick={() =>
-                                              setSelectedEmployee(employee)
-                                            }
-                                            className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-colors shadow-sm"
-                                          >
-                                            View Tasks
-                                          </button>
-                                        </td>
-                                      </tr>
-                                    );
-                                  })}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        {/* Stats Cards for Head's Tasks */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-6">
-                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-purple-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
-                            <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mx-auto mb-2">
-                              <ListTodo className="w-5 h-5 text-purple-600" />
-                            </div>
-                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
-                              {getHeadTaskStats().total}
-                            </p>
-                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
-                              Total Tasks
-                            </p>
-                          </div>
-
-                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
-                            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mx-auto mb-2">
-                              <CheckCircle className="w-5 h-5 text-green-600" />
-                            </div>
-                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-1">
-                              {getHeadTaskStats().completed}
-                            </p>
-                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
-                              Completed
-                            </p>
-                          </div>
-
-                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-orange-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
-                            <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center mx-auto mb-2">
-                              <Clock className="w-5 h-5 text-orange-600" />
-                            </div>
-                            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600 mb-1">
-                              {getHeadTaskStats().pending}
-                            </p>
-                            <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
-                              Pending
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 p-4 sm:p-6">
-                          <div className="flex items-center justify-between mb-4">
-                            <div>
-                              <h2 className="text-base sm:text-lg font-bold text-gray-900">
-                                My Tasks
-                              </h2>
-                              <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                                Tasks assigned by Admin to you.
+                            <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-orange-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                              <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center mx-auto mb-2">
+                                <Clock className="w-5 h-5 text-orange-600" />
+                              </div>
+                              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600 mb-1">
+                                {totalStats.pending}
+                              </p>
+                              <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
+                                Pending
                               </p>
                             </div>
                           </div>
 
-                          {headTaskItems.length === 0 ? (
-                            <div className="text-center py-10 text-gray-500 text-sm">
-                              No tasks assigned yet.
+                          {/* Employee Table */}
+                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 overflow-hidden">
+                            <div className="p-3 sm:p-4 border-b border-blue-100 flex items-center justify-between gap-3">
+                              <h2 className="text-base sm:text-lg font-bold text-gray-900">
+                                Department Employees
+                              </h2>
+                              <button
+                                onClick={() => {
+                                  setNewTask({
+                                    taskName: "",
+                                    description: "",
+                                    employeeId: "",
+                                    employeeIds: [],
+                                    assignMode: "single",
+                                    status: "pending",
+                                    priority: "medium",
+                                    startDate: "",
+                                    dueDate: "",
+                                  });
+                                  setShowAddTaskModal(true);
+                                }}
+                                className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-colors shadow-sm"
+                              >
+                                Assign Task
+                              </button>
                             </div>
-                          ) : (
-                            <div className="grid gap-4">
-                              {headTaskItems.map((task) => (
-                                <div
-                                  key={task.id}
-                                  className="rounded-2xl border border-slate-200 bg-slate-50 p-4 hover:border-blue-200 transition-all"
-                                >
-                                  <div className="flex items-start justify-between gap-3">
-                                    <div>
-                                      <p className="text-sm font-bold text-slate-900">
-                                        {task.title}
-                                      </p>
-                                      <p className="text-xs text-slate-500 mt-1">
-                                        {task.description ||
-                                          "No description provided."}
-                                      </p>
+
+                            <div className="overflow-x-auto">
+                              <table className="w-full">
+                                <thead className="bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 border-b">
+                                  <tr>
+                                    <th className="px-4 py-3 text-left text-xs font-semibold text-white uppercase tracking-wider">
+                                      Employee
+                                    </th>
+                                    <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                      Total Tasks
+                                    </th>
+                                    <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                      Completed
+                                    </th>
+                                    <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                      Pending
+                                    </th>
+                                    <th className="px-4 py-3 text-center text-xs font-semibold text-white uppercase tracking-wider">
+                                      Action
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                  {employees
+                                    .filter(
+                                      (employee) =>
+                                        employee.role === "employee",
+                                    )
+                                    .map((employee) => {
+                                      const stats = getTaskStats(employee);
+
+                                      return (
+                                        <tr
+                                          key={employee._id}
+                                          className="hover:bg-blue-50/60 transition-colors"
+                                        >
+                                          <td className="px-4 py-3">
+                                            <div className="flex items-center gap-3">
+                                              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm flex-shrink-0">
+                                                {employee.firstName.charAt(0)}
+                                              </div>
+                                              <div>
+                                                <p className="font-semibold text-gray-900 text-sm">
+                                                  {employee.firstName}{" "}
+                                                  {employee.lastName}
+                                                </p>
+                                                <p className="text-xs text-gray-600">
+                                                  {employee.employeeId} •{" "}
+                                                  {employee.position}
+                                                </p>
+                                              </div>
+                                            </div>
+                                          </td>
+
+                                          <td className="px-4 py-3 text-center">
+                                            <span className="text-base font-bold text-gray-900">
+                                              {stats.total}
+                                            </span>
+                                          </td>
+
+                                          <td className="px-4 py-3 text-center">
+                                            <span className="text-base font-bold text-green-600">
+                                              {stats.completed}
+                                            </span>
+                                          </td>
+
+                                          <td className="px-4 py-3 text-center">
+                                            <span className="text-base font-bold text-orange-600">
+                                              {stats.pending}
+                                            </span>
+                                          </td>
+
+                                          <td className="px-4 py-3 text-center">
+                                            <button
+                                              onClick={() =>
+                                                setSelectedEmployee(employee)
+                                              }
+                                              className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white text-xs font-semibold rounded-lg hover:from-blue-700 hover:to-blue-600 transition-colors shadow-sm"
+                                            >
+                                              View Tasks
+                                            </button>
+                                          </td>
+                                        </tr>
+                                      );
+                                    })}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          {/* Stats Cards for Head's Tasks */}
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-6">
+                            <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-purple-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                              <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center mx-auto mb-2">
+                                <ListTodo className="w-5 h-5 text-purple-600" />
+                              </div>
+                              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
+                                {getHeadTaskStats().total}
+                              </p>
+                              <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
+                                Total Tasks
+                              </p>
+                            </div>
+
+                            <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-green-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mx-auto mb-2">
+                                <CheckCircle className="w-5 h-5 text-green-600" />
+                              </div>
+                              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 mb-1">
+                                {getHeadTaskStats().completed}
+                              </p>
+                              <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
+                                Completed
+                              </p>
+                            </div>
+
+                            <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-orange-100 p-3 sm:p-4 text-center hover:shadow-xl transition-all">
+                              <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center mx-auto mb-2">
+                                <Clock className="w-5 h-5 text-orange-600" />
+                              </div>
+                              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600 mb-1">
+                                {getHeadTaskStats().pending}
+                              </p>
+                              <p className="text-[10px] sm:text-xs text-gray-600 font-medium">
+                                Pending
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 p-4 sm:p-6">
+                            <div className="flex items-center justify-between mb-4">
+                              <div>
+                                <h2 className="text-base sm:text-lg font-bold text-gray-900">
+                                  My Tasks
+                                </h2>
+                                <p className="text-xs sm:text-sm text-gray-600 mt-1">
+                                  Tasks assigned by Admin to you.
+                                </p>
+                              </div>
+                            </div>
+
+                            {headTaskItems.length === 0 ? (
+                              <div className="text-center py-10 text-gray-500 text-sm">
+                                No tasks assigned yet.
+                              </div>
+                            ) : (
+                              <div className="grid gap-4">
+                                {headTaskItems.map((task) => (
+                                  <div
+                                    key={task.id}
+                                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4 hover:border-blue-200 transition-all"
+                                  >
+                                    <div className="flex items-start justify-between gap-3">
+                                      <div>
+                                        <p className="text-sm font-bold text-slate-900">
+                                          {task.title}
+                                        </p>
+                                        <p className="text-xs text-slate-500 mt-1">
+                                          {task.description ||
+                                            "No description provided."}
+                                        </p>
+                                      </div>
+                                      <span
+                                        className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getHeadStatusClass(
+                                          task.status,
+                                        )}`}
+                                      >
+                                        {formatHeadStatus(task.status)}
+                                      </span>
                                     </div>
-                                    <span
-                                      className={`px-2.5 py-1 rounded-full text-xs font-semibold ${getHeadStatusClass(
-                                        task.status,
-                                      )}`}
-                                    >
-                                      {formatHeadStatus(task.status)}
-                                    </span>
+                                    <div className="flex items-center justify-end mt-4">
+                                      <button
+                                        className="text-xs font-semibold text-blue-600 hover:text-blue-700"
+                                        onClick={() =>
+                                          openHeadTaskDetails(task)
+                                        }
+                                      >
+                                        View Details
+                                      </button>
+                                    </div>
                                   </div>
-                                  <div className="flex items-center justify-end mt-4">
-                                    <button
-                                      className="text-xs font-semibold text-blue-600 hover:text-blue-700"
-                                      onClick={() => openHeadTaskDetails(task)}
-                                    >
-                                      View Details
-                                    </button>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </>
-                    )}
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {isHeadTaskModalOpen && selectedHeadTask && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-                  <div className="w-full max-w-2xl rounded-3xl bg-white p-6 shadow-2xl">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                          Task Details
-                        </p>
-                        <h3 className="text-xl font-bold text-slate-900">
-                          {selectedHeadTask.title}
-                        </h3>
-                        <p className="mt-2 text-sm text-slate-600">
-                          {selectedHeadTask.description ||
-                            "No description provided."}
-                        </p>
-                      </div>
-                      <button
-                        className="text-sm font-semibold text-slate-500 hover:text-slate-700"
-                        onClick={closeHeadTaskDetails}
-                      >
-                        Close
-                      </button>
-                    </div>
-
-                    <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                        <p className="text-xs uppercase text-slate-500">
-                          Assigned
-                        </p>
-                        <p className="text-sm font-semibold text-slate-900">
-                          {formatHeadDate(selectedHeadTask.assignedDate)}
-                        </p>
-                      </div>
-                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                        <p className="text-xs uppercase text-slate-500">Due</p>
-                        <p className="text-sm font-semibold text-slate-900">
-                          {formatHeadDate(selectedHeadTask.dueDate)}
-                        </p>
-                      </div>
-                      <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                        <p className="text-xs uppercase text-slate-500">
-                          Status
-                        </p>
-                        <span
-                          className={`mt-1 inline-flex px-2.5 py-1 rounded-full text-xs font-semibold ${getHeadStatusClass(
-                            selectedHeadTask.status,
-                          )}`}
-                        >
-                          {formatHeadStatus(selectedHeadTask.status)}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/40 p-4">
-                      <p className="text-xs uppercase text-blue-600 font-semibold tracking-wider">
-                        Update Progress
-                      </p>
-                      <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                {isHeadTaskModalOpen && selectedHeadTask && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+                    <div className="w-full max-w-2xl rounded-3xl bg-white p-6 shadow-2xl">
+                      <div className="flex items-start justify-between gap-4">
                         <div>
-                          <label className="block text-xs font-semibold text-slate-600 mb-2">
-                            Status
-                          </label>
-                          <select
-                            value={headTaskUpdate.status}
-                            onChange={(event) =>
-                              setHeadTaskUpdate((prev) => ({
-                                ...prev,
-                                status: event.target.value,
-                              }))
-                            }
-                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
-                          >
-                            <option value="pending">Pending</option>
-                            <option value="in-progress">In Progress</option>
-                            <option value="completed">Completed</option>
-                          </select>
+                          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                            Task Details
+                          </p>
+                          <h3 className="text-xl font-bold text-slate-900">
+                            {selectedHeadTask.title}
+                          </h3>
+                          <p className="mt-2 text-sm text-slate-600">
+                            {selectedHeadTask.description ||
+                              "No description provided."}
+                          </p>
                         </div>
-                        <div className="sm:col-span-1">
-                          <label className="block text-xs font-semibold text-slate-600 mb-2">
-                            Comment
-                          </label>
-                          <textarea
-                            rows={3}
-                            value={headTaskUpdate.comment}
-                            onChange={(event) =>
-                              setHeadTaskUpdate((prev) => ({
-                                ...prev,
-                                comment: event.target.value,
-                              }))
-                            }
-                            placeholder="Share a quick update for Admin."
-                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
-                          />
+                        <button
+                          className="text-sm font-semibold text-slate-500 hover:text-slate-700"
+                          onClick={closeHeadTaskDetails}
+                        >
+                          Close
+                        </button>
+                      </div>
+
+                      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                          <p className="text-xs uppercase text-slate-500">
+                            Assigned
+                          </p>
+                          <p className="text-sm font-semibold text-slate-900">
+                            {formatHeadDate(selectedHeadTask.assignedDate)}
+                          </p>
+                        </div>
+                        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                          <p className="text-xs uppercase text-slate-500">
+                            Due
+                          </p>
+                          <p className="text-sm font-semibold text-slate-900">
+                            {formatHeadDate(selectedHeadTask.dueDate)}
+                          </p>
+                        </div>
+                        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                          <p className="text-xs uppercase text-slate-500">
+                            Status
+                          </p>
+                          <span
+                            className={`mt-1 inline-flex px-2.5 py-1 rounded-full text-xs font-semibold ${getHeadStatusClass(
+                              selectedHeadTask.status,
+                            )}`}
+                          >
+                            {formatHeadStatus(selectedHeadTask.status)}
+                          </span>
                         </div>
                       </div>
-                      <div className="mt-4">
-                        <label className="block text-xs font-semibold text-slate-600 mb-2">
-                          Attach File (Optional)
-                        </label>
-                        <div className="flex items-center gap-3">
-                          <label className="flex-1 cursor-pointer">
-                            <div className="flex items-center gap-2 px-3 py-2 border-2 border-dashed border-slate-300 rounded-xl hover:border-blue-400 hover:bg-blue-50/30 transition-all">
-                              <svg
-                                className="w-5 h-5 text-slate-500"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
-                                />
-                              </svg>
-                              <span className="text-xs text-slate-600">
-                                {headTaskUpdate.file
-                                  ? headTaskUpdate.file.name
-                                  : "Choose file..."}
-                              </span>
-                            </div>
-                            <input
-                              type="file"
+
+                      <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/40 p-4">
+                        <p className="text-xs uppercase text-blue-600 font-semibold tracking-wider">
+                          Update Progress
+                        </p>
+                        <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                          <div>
+                            <label className="block text-xs font-semibold text-slate-600 mb-2">
+                              Status
+                            </label>
+                            <select
+                              value={headTaskUpdate.status}
                               onChange={(event) =>
                                 setHeadTaskUpdate((prev) => ({
                                   ...prev,
-                                  file: event.target.files?.[0] || null,
+                                  status: event.target.value,
                                 }))
                               }
-                              className="hidden"
-                              accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt"
-                            />
-                          </label>
-                          {headTaskUpdate.file && (
-                            <button
-                              type="button"
-                              onClick={() =>
+                              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="in-progress">In Progress</option>
+                              <option value="completed">Completed</option>
+                            </select>
+                          </div>
+                          <div className="sm:col-span-1">
+                            <label className="block text-xs font-semibold text-slate-600 mb-2">
+                              Comment
+                            </label>
+                            <textarea
+                              rows={3}
+                              value={headTaskUpdate.comment}
+                              onChange={(event) =>
                                 setHeadTaskUpdate((prev) => ({
                                   ...prev,
-                                  file: null,
+                                  comment: event.target.value,
                                 }))
                               }
-                              className="px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            >
-                              Remove
-                            </button>
-                          )}
+                              placeholder="Share a quick update for Admin."
+                              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+                            />
+                          </div>
                         </div>
-                      </div>
-                      <div className="mt-4 flex items-center justify-end">
-                        <button
-                          onClick={submitHeadTaskUpdate}
-                          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:from-blue-700 hover:to-blue-600"
-                        >
-                          Send Update
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 p-4 sm:p-5 lg:p-6">
-              <button
-                onClick={() => setSelectedEmployee(null)}
-                className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4 sm:mb-5 font-semibold text-sm sm:text-base hover:gap-3 transition-all"
-              >
-                <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
-                Back to Employees
-              </button>
-
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5 sm:mb-6 pb-5 sm:pb-6 border-b border-blue-100">
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center text-white font-bold text-lg sm:text-xl lg:text-2xl shadow-md">
-                    {selectedEmployee.firstName.charAt(0)}
-                  </div>
-
-                  <div>
-                    <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
-                      {selectedEmployee.firstName} {selectedEmployee.lastName}
-                    </h2>
-                    <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">
-                      {selectedEmployee.employeeId} •{" "}
-                      {selectedEmployee.position}
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => {
-                    setNewTask({
-                      ...newTask,
-                      employeeId: selectedEmployee._id,
-                      employeeIds: [],
-                      assignMode: "single",
-                    });
-                    setShowAddTaskModal(true);
-                  }}
-                  className="w-full sm:w-auto px-4 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 font-semibold flex items-center justify-center gap-2 text-sm sm:text-base shadow-md hover:shadow-lg transition-all"
-                >
-                  <Plus size={18} className="sm:w-5 sm:h-5" />
-                  Add Task
-                </button>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-6">
-                <div className="bg-white/90 backdrop-blur rounded-2xl p-3 sm:p-4 text-center border border-blue-100 shadow-lg hover:shadow-xl transition-all">
-                  <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mx-auto mb-2">
-                    <ListTodo className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900">
-                    {getTaskStats(selectedEmployee).total}
-                  </p>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">
-                    Total
-                  </p>
-                </div>
-                <div className="bg-white/90 backdrop-blur rounded-2xl p-3 sm:p-4 text-center border border-green-100 shadow-lg hover:shadow-xl transition-all">
-                  <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mx-auto mb-2">
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                  </div>
-                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">
-                    {getTaskStats(selectedEmployee).completed}
-                  </p>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">
-                    Done
-                  </p>
-                </div>
-                <div className="bg-white/90 backdrop-blur rounded-2xl p-3 sm:p-4 text-center border border-orange-100 shadow-lg hover:shadow-xl transition-all">
-                  <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center mx-auto mb-2">
-                    <Clock className="w-5 h-5 text-orange-600" />
-                  </div>
-                  <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600">
-                    {getTaskStats(selectedEmployee).pending}
-                  </p>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">
-                    Pending
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-2 sm:gap-3 mb-5 sm:mb-6">
-                {["All", "Pending", "Completed"].map((status) => (
-                  <button
-                    key={status}
-                    onClick={() => setFilterStatus(status)}
-                    className={`px-3 sm:px-4 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all ${
-                      filterStatus === status
-                        ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                  >
-                    {status}
-                  </button>
-                ))}
-              </div>
-
-              <div className="space-y-3 sm:space-y-4">
-                {filteredTasks.length === 0 ? (
-                  <div className="text-center py-10 sm:py-12 text-gray-500">
-                    <AlertCircle
-                      size={40}
-                      className="sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 opacity-30"
-                    />
-                    <p className="text-sm sm:text-base">
-                      No {filterStatus.toLowerCase()} tasks
-                    </p>
-                  </div>
-                ) : (
-                  filteredTasks.map((task) => (
-                    <div
-                      key={task.id}
-                      className="border-2 border-gray-200 rounded-lg p-4 hover:shadow-lg transition-all hover:border-blue-300"
-                    >
-                      <div className="flex justify-between items-start mb-2 sm:mb-3">
-                        <h4 className="font-bold text-gray-900 text-sm sm:text-base flex-1 leading-tight">
-                          {task.taskName}
-                        </h4>
-                        <div className="flex items-center gap-2 ml-2">
-                          <span
-                            className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold whitespace-nowrap ${
-                              task.status === "completed"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-orange-100 text-orange-700"
-                            }`}
+                        <div className="mt-4">
+                          <label className="block text-xs font-semibold text-slate-600 mb-2">
+                            Attach File (Optional)
+                          </label>
+                          <div className="flex items-center gap-3">
+                            <label className="flex-1 cursor-pointer">
+                              <div className="flex items-center gap-2 px-3 py-2 border-2 border-dashed border-slate-300 rounded-xl hover:border-blue-400 hover:bg-blue-50/30 transition-all">
+                                <svg
+                                  className="w-5 h-5 text-slate-500"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                                  />
+                                </svg>
+                                <span className="text-xs text-slate-600">
+                                  {headTaskUpdate.file
+                                    ? headTaskUpdate.file.name
+                                    : "Choose file..."}
+                                </span>
+                              </div>
+                              <input
+                                type="file"
+                                onChange={(event) =>
+                                  setHeadTaskUpdate((prev) => ({
+                                    ...prev,
+                                    file: event.target.files?.[0] || null,
+                                  }))
+                                }
+                                className="hidden"
+                                accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt"
+                              />
+                            </label>
+                            {headTaskUpdate.file && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setHeadTaskUpdate((prev) => ({
+                                    ...prev,
+                                    file: null,
+                                  }))
+                                }
+                                className="px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              >
+                                Remove
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-4 flex items-center justify-end">
+                          <button
+                            onClick={submitHeadTaskUpdate}
+                            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:from-blue-700 hover:to-blue-600"
                           >
-                            {task.status.charAt(0).toUpperCase() +
-                              task.status.slice(1)}
-                          </span>
-                          {(role === "Admin" || role === "Department Head") && (
-                            <button
-                              onClick={() => openEditTaskModal(task)}
-                              disabled={isProcessing}
-                              className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors disabled:opacity-60"
-                              title="Edit task"
-                            >
-                              <Edit size={14} />
-                            </button>
-                          )}
-                          {["Admin", "Department Head"].includes(user?.role) && (
-                            <button
-                              onClick={() =>
-                                handleDeleteTask(task.id || task._id)
-                              }
-                              disabled={isProcessing}
-                              className="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors disabled:opacity-60"
-                              title="Delete task"
-                            >
-                              <Trash2 size={14} />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
-                      <span
-                        className={`inline-block px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold mb-2 sm:mb-3 ${
-                          task.priority === "high"
-                            ? "bg-red-100 text-red-700"
-                            : task.priority === "medium"
-                              ? "bg-orange-100 text-orange-700"
-                              : "bg-green-100 text-green-700"
-                        }`}
-                      >
-                        {task.priority.charAt(0).toUpperCase() +
-                          task.priority.slice(1)}{" "}
-                        Priority
-                      </span>
-
-                      <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3 leading-relaxed">
-                        {task.description}
-                      </p>
-
-                      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
-                        <div className="flex items-center gap-1.5">
-                          <Calendar size={14} className="flex-shrink-0" />
-                          <span className="font-medium">
-                            Start:{" "}
-                            {new Date(task.startDate).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <Calendar size={14} className="flex-shrink-0" />
-                          <span className="font-medium">
-                            Due: {new Date(task.dueDate).toLocaleDateString()}
-                          </span>
+                            Send Update
+                          </button>
                         </div>
                       </div>
                     </div>
-                  ))
+                  </div>
                 )}
+              </>
+            ) : (
+              <div className="bg-white/95 backdrop-blur rounded-2xl shadow-lg border border-blue-100 p-4 sm:p-5 lg:p-6">
+                <button
+                  onClick={() => setSelectedEmployee(null)}
+                  className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-4 sm:mb-5 font-semibold text-sm sm:text-base hover:gap-3 transition-all"
+                >
+                  <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
+                  Back to Employees
+                </button>
+
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-5 sm:mb-6 pb-5 sm:pb-6 border-b border-blue-100">
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full bg-gradient-to-br from-blue-600 to-blue-500 flex items-center justify-center text-white font-bold text-lg sm:text-xl lg:text-2xl shadow-md">
+                      {selectedEmployee.firstName.charAt(0)}
+                    </div>
+
+                    <div>
+                      <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
+                        {selectedEmployee.firstName} {selectedEmployee.lastName}
+                      </h2>
+                      <p className="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">
+                        {selectedEmployee.employeeId} •{" "}
+                        {selectedEmployee.position}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      setNewTask({
+                        ...newTask,
+                        employeeId: selectedEmployee._id,
+                        employeeIds: [],
+                        assignMode: "single",
+                      });
+                      setShowAddTaskModal(true);
+                    }}
+                    className="w-full sm:w-auto px-4 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 font-semibold flex items-center justify-center gap-2 text-sm sm:text-base shadow-md hover:shadow-lg transition-all"
+                  >
+                    <Plus size={18} className="sm:w-5 sm:h-5" />
+                    Add Task
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-5 sm:mb-6">
+                  <div className="bg-white/90 backdrop-blur rounded-2xl p-3 sm:p-4 text-center border border-blue-100 shadow-lg hover:shadow-xl transition-all">
+                    <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center mx-auto mb-2">
+                      <ListTodo className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900">
+                      {getTaskStats(selectedEmployee).total}
+                    </p>
+                    <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">
+                      Total
+                    </p>
+                  </div>
+                  <div className="bg-white/90 backdrop-blur rounded-2xl p-3 sm:p-4 text-center border border-green-100 shadow-lg hover:shadow-xl transition-all">
+                    <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center mx-auto mb-2">
+                      <CheckCircle className="w-5 h-5 text-green-600" />
+                    </div>
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">
+                      {getTaskStats(selectedEmployee).completed}
+                    </p>
+                    <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">
+                      Done
+                    </p>
+                  </div>
+                  <div className="bg-white/90 backdrop-blur rounded-2xl p-3 sm:p-4 text-center border border-orange-100 shadow-lg hover:shadow-xl transition-all">
+                    <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center mx-auto mb-2">
+                      <Clock className="w-5 h-5 text-orange-600" />
+                    </div>
+                    <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600">
+                      {getTaskStats(selectedEmployee).pending}
+                    </p>
+                    <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">
+                      Pending
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 sm:gap-3 mb-5 sm:mb-6">
+                  {["All", "Pending", "Completed"].map((status) => (
+                    <button
+                      key={status}
+                      onClick={() => setFilterStatus(status)}
+                      className={`px-3 sm:px-4 py-2 rounded-lg font-semibold text-xs sm:text-sm transition-all ${
+                        filterStatus === status
+                          ? "bg-gradient-to-r from-blue-600 to-blue-500 text-white shadow-md"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                      }`}
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="space-y-3 sm:space-y-4">
+                  {filteredTasks.length === 0 ? (
+                    <div className="text-center py-10 sm:py-12 text-gray-500">
+                      <AlertCircle
+                        size={40}
+                        className="sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-3 opacity-30"
+                      />
+                      <p className="text-sm sm:text-base">
+                        No {filterStatus.toLowerCase()} tasks
+                      </p>
+                    </div>
+                  ) : (
+                    filteredTasks.map((task) => (
+                      <div
+                        key={task.id}
+                        className="border-2 border-gray-200 rounded-lg p-4 hover:shadow-lg transition-all hover:border-blue-300"
+                      >
+                        <div className="flex justify-between items-start mb-2 sm:mb-3">
+                          <h4 className="font-bold text-gray-900 text-sm sm:text-base flex-1 leading-tight">
+                            {task.taskName}
+                          </h4>
+                          <div className="flex items-center gap-2 ml-2">
+                            <span
+                              className={`px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold whitespace-nowrap ${
+                                task.status === "completed"
+                                  ? "bg-green-100 text-green-700"
+                                  : "bg-orange-100 text-orange-700"
+                              }`}
+                            >
+                              {task.status.charAt(0).toUpperCase() +
+                                task.status.slice(1)}
+                            </span>
+                            {(role === "Admin" ||
+                              role === "Department Head") && (
+                              <button
+                                onClick={() => openEditTaskModal(task)}
+                                disabled={isProcessing}
+                                className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors disabled:opacity-60"
+                                title="Edit task"
+                              >
+                                <Edit size={14} />
+                              </button>
+                            )}
+                            {["Admin", "Department Head"].includes(
+                              user?.role,
+                            ) && (
+                              <button
+                                onClick={() =>
+                                  handleDeleteTask(task.id || task._id)
+                                }
+                                disabled={isProcessing}
+                                className="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-colors disabled:opacity-60"
+                                title="Delete task"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        <span
+                          className={`inline-block px-2 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold mb-2 sm:mb-3 ${
+                            task.priority === "high"
+                              ? "bg-red-100 text-red-700"
+                              : task.priority === "medium"
+                                ? "bg-orange-100 text-orange-700"
+                                : "bg-green-100 text-green-700"
+                          }`}
+                        >
+                          {task.priority.charAt(0).toUpperCase() +
+                            task.priority.slice(1)}{" "}
+                          Priority
+                        </span>
+
+                        <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3 leading-relaxed">
+                          {task.description}
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500">
+                          <div className="flex items-center gap-1.5">
+                            <Calendar size={14} className="flex-shrink-0" />
+                            <span className="font-medium">
+                              Start:{" "}
+                              {new Date(task.startDate).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <Calendar size={14} className="flex-shrink-0" />
+                            <span className="font-medium">
+                              Due: {new Date(task.dueDate).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </section>
         </div>
       </div>
 

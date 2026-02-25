@@ -223,7 +223,7 @@ export default function EmployeeDashboard() {
       </div>
       <EmployeesSidebar />
 
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 min-[1112px]:ml-[280px]">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 min-[1112px]:ml-[280px] mt-12 md:mt-10 lg:mt-0">
         {/* PROFILE HEADER CARD */}
         <div className="relative overflow-hidden rounded-2xl shadow-xl bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 transform transition-all hover:shadow-blue-500/20 group">
           {/* Animated shimmer effect */}

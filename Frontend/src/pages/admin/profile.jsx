@@ -345,8 +345,8 @@ export default function AdminProfile() {
       <div className="flex min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
         <AdminSidebar />
 
-        <div className="flex-1 w-full min-w-0 lg:ml-64">
-          <div className="p-4 pt-20 md:p-6 md:pt-8 lg:p-8">
+        <div className="flex-1 w-full min-w-0 lg:ml-64 mt-12 md:mt-10 lg:mt-0">
+          <div className="p-4 md:p-6 lg:p-8">
             <div className="max-w-6xl mx-auto">
               {/* Header with decorative gradient */}
               <div className="mb-8 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 rounded-2xl p-8 text-white shadow-2xl border border-white/20 relative overflow-hidden">
@@ -416,12 +416,11 @@ export default function AdminProfile() {
 
                       {/* Profile Info */}
                       <div className="flex-1 text-center sm:text-left text-white">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-2">
+                        <h2 className="text-3xl md:text-4xl font-bold mb-4">
                           {profile?.firstName} {profile?.lastName}
                         </h2>
-                        <p className="text-blue-100 mb-4 text-lg font-semibold">
-                          {profile?.position || "Administrator"}
-                        </p>
+                        
+                        
                         <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
                           <span className="px-4 py-2 bg-white/20 rounded-full text-sm font-semibold backdrop-blur-sm border border-white/30">
                             {profile?.role || "Super Admin"}
@@ -644,7 +643,7 @@ export default function AdminProfile() {
                           Position
                         </label>
                         <p className="text-gray-900 font-semibold text-lg">
-                          {profile?.position || "—"}
+                          {profile?.role || "—"}
                         </p>
                       </div>
 

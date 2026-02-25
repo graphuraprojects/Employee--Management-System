@@ -495,64 +495,6 @@ const Support = () => {
                               {ticket.status}
                             </span>
                           </td>
-                          {/* <td
-                            style={{
-                              padding: "12px 16px",
-                              borderBottom: "1px solid #e5e7eb",
-                              textAlign: "center",
-                            }}
-                          >
-                            {ticket.isReadByAdmin ? (
-                              <span
-                                style={{
-                                  color: "#10b981",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "4px",
-                                }}
-                              >
-                                <svg
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                >
-                                  <polyline points="20 6 9 17 4 12"></polyline>
-                                </svg>
-                                Read
-                              </span>
-                            ) : (
-                              <span
-                                style={{
-                                  color: "#ef4444",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "4px",
-                                }}
-                              >
-                                <svg
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  strokeWidth="2"
-                                >
-                                  <circle cx="12" cy="12" r="10"></circle>
-                                  <line x1="12" y1="8" x2="12" y2="12"></line>
-                                  <line
-                                    x1="12"
-                                    y1="16"
-                                    x2="12.01"
-                                    y2="16"
-                                  ></line>
-                                </svg>
-                                Unread
-                              </span>
-                            )}
-                          </td> */}
                           <td
                             style={{
                               padding: "12px 16px",
@@ -719,7 +661,7 @@ const Support = () => {
       )}
 
       <EmployeesSidebar />
-      <div className="support-center">
+      <div className="support-center mt-10 md:mt-8 lg:mt-0">
         <div className="support-header bg-white rounded-2xl shadow-lg p-6">
           <div className="support-header-child1">
             <h1>Support Center</h1>

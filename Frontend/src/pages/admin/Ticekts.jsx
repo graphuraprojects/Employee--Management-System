@@ -424,7 +424,7 @@ export default function Tickets() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-white">
       <AdminSidebar />
-      <main className="lg:ml-64 p-6">
+      <main className="lg:ml-64 p-6 mt-12 md:mt-10 lg:mt-0">
         <div className="bg-white/90 backdrop-blur rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
           <div className="px-6 py-7 border-b border-slate-100 bg-gradient-to-r from-blue-600 via-blue-500 to-blue-400 text-white relative overflow-hidden">
             <div className="absolute -right-16 -top-16 w-52 h-52 bg-white/10 rounded-full blur-2xl" />
