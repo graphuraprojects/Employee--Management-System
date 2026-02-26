@@ -545,10 +545,10 @@ export default function EmployeeProfile() {
                     name: "Leaves",
                     icon: FileText,
                   },
-                  {
-                    name: "Assigned Tasks",
-                    icon: ClipboardList,
-                  },
+                  // {
+                  //   name: "Assigned Tasks",
+                  //   icon: ClipboardList,
+                  // },
                 ].map((tab) => (
                   <button
                     key={tab.name}
